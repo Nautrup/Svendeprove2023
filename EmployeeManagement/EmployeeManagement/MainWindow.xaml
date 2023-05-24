@@ -1,0 +1,83 @@
+﻿<Window x:Class="EmployeeManagement.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmployeeManagement"
+        mc:Ignorable="d"
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
+        Title="MainWindow" Height="1080" Width="1920">
+    <Border Background="#eff2f7" CornerRadius="30">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Left Menu-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--Button Icon-->
+                <Border Grid.Row="1" Background="#06283D" CornerRadius="0 50 0 30">
+                    <DockPanel>
+                        <!--Menu Title-->
+                        <TextBlock Text="Logo" Foreground="White" FontSize="22" FontWeight="SemiBold"
+                                   DockPanel.Dock="Top" TextAlignment="Center" />
+
+                        <Separator Margin="25" DockPanel.Dock="Top" Height="0.8" Background="#7e5fdc" />
+
+                        <!--Menu buttons-->
+                        <StackPanel DockPanel.Dock="Top">
+
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenDashboardPageCommand}" >
+                                <StackPanel Orientation="Horizontal">
+                                    <Icon:PackIconMaterial Kind="ViewDashboardVariant" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Vagtplan" />
+                                </StackPanel>
+                            </Button>
+
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeePageCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Icon:PackIconMaterial Kind="FaceMan" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Medarbejder"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenStatisticsPageCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Icon:PackIconMaterial Kind="Graph" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Some crap" />
+                                </StackPanel>
+                            </Button>
+
+                        </StackPanel>
+
+                        <!--Log ud-->
+                        <Button Style="{StaticResource MenuButtons}" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
+                                 >
+                            <StackPanel Orientation="Horizontal">
+                                <Icon:PackIconMaterial Kind="Logout" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Log ud" />
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+
+                </Border>
+            </Grid>
+
+            <!--Main Window-->
+            <Grid Grid.Column="1">
+           
+                <!--Frame-->
+                <Frame Grid.Row="1"  NavigationUIVisibility="Hidden" Source="{Binding FramePage, UpdateSourceTrigger=PropertyChanged}">
+
+                </Frame>
+            </Grid>
+
+        </Grid>
+    </Border>
+</Window>

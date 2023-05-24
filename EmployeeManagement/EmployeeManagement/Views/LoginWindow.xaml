@@ -1,0 +1,123 @@
+﻿<Window x:Class="EmployeeManagement.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmployeeManagement.Views"
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        WindowStyle="none"
+        Title="LoginWindow" 
+        Height="460" Width="800">
+    <Border CornerRadius="15"
+            BorderThickness="3" >
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#256D85" Offset="0" />
+                <GradientStop Color="#47B5FF" Offset="0.75" />
+                <GradientStop Color="#DFF6FF" Offset="1" />
+            </LinearGradientBrush>
+        </Border.BorderBrush>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,1" EndPoint="1,0">
+                <GradientStop Color="#06283D" Offset="0" />
+                <GradientStop Color="#256D85" Offset="0.75" />
+                <GradientStop Color="#DFF6FF" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="5" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="LOG IND"
+                   Foreground="DarkGray"
+                   FontSize="14"
+                   FontFamily="Montserrat"
+                   Grid.Column="0" VerticalAlignment="Center" Margin="25 0 0 0"/>
+
+                <Button BorderThickness="0" Background="#256D85" Style="{StaticResource LoginButton}"
+                        Cursor="Hand" Grid.Column="1" >
+                    <Icon:PackIconMaterial Kind="WindowMinimize" />
+                </Button>
+
+                <Button BorderThickness="0" Background="IndianRed" Style="{StaticResource LoginButton}"
+                        Cursor="Hand" Grid.Column="2" Command="{Binding CloseWindowCommand}">
+                    <Icon:PackIconMaterial Kind="WindowClose" />
+                </Button>
+            </Grid>
+
+            <StackPanel Width="250"
+                        Grid.Row="2"
+                        Orientation="Vertical"
+                        Margin="0 35 0 0">
+                <Icon:PackIconRemixIcon Kind="AccountBoxLine" Foreground="White" Width="100" Height="80" HorizontalAlignment="Center"/>
+                <TextBlock Text="Medarbejder" HorizontalAlignment="Center" Margin="0 10 0 0"
+                           FontSize="25" FontWeight="SemiBold" FontFamily="Montserrat"
+                           Foreground="White"/>
+
+                <TextBlock Text="Brugernavn (Email adresse)"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           Margin="0 35 0 0" />
+
+
+                <TextBox FontSize="13"
+                        FontWeight="Medium" FontFamily="Montserrat" Foreground="White"
+                        Background="Transparent" BorderThickness="0 0 0 3" BorderBrush="DarkGray" 
+                         Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
+                <TextBlock Text="Adgangskode"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           Margin="0 35 0 0" />
+
+                <TextBox FontSize="13"
+                        FontWeight="Medium" FontFamily="Montserrat" Foreground="White"
+                        Background="Transparent" BorderThickness="0 0 0 3" BorderBrush="DarkGray" 
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
+
+                <Button Style="{StaticResource addNewMemeberButton}" HorizontalAlignment="Center" 
+                        Command="{Binding AuthorizeUserCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Icon:PackIconMaterial Kind="Login"  Margin="0 0 5 0"/>
+                        <TextBlock Text="Log ind" />
+                    </StackPanel>
+                </Button>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0 30 0 0">
+                    <TextBlock Text="Glemt adgangskode?"
+                           Foreground="DarkGray"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Montserrat" Margin="0 0 10 0" />
+
+                    <TextBlock Text="Nulstil"
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           FontFamily="Montserrat" />
+
+
+                </StackPanel>
+            </StackPanel>
+
+
+        </Grid>
+    </Border>
+</Window>
