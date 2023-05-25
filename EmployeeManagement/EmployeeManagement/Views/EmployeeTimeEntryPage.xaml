@@ -1,0 +1,311 @@
+﻿<Page x:Class="EmployeeManagement.Views.EmployeeTimeEntryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:EmployeeManagement.Views"
+      mc:Ignorable="d" 
+      xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" 
+      xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel"
+      d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeTimeEntryViewModel}"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="EmployeeTimeEntryPage">
+
+    <Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <!--Stempel ind--><!-- 
+            <Border Background="AliceBlue" CornerRadius="15">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    
+                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" 
+                        Height="50" Width="250" Grid.Row="0"
+                        Background="Green"
+                        HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="22" Height="22" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel ind" FontSize="20" />
+                        </StackPanel>
+                    </Button>
+
+                    
+                </Grid>
+            </Border>
+
+            --><!--Stempel ud med fravær--><!--
+            <Border Background="AliceBlue" CornerRadius="15"
+                Grid.Column="1">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" 
+                        Height="50" Width="250" Grid.Row="0"
+                        Background="OrangeRed"
+                        HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="22" Height="22" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel ud m. fravær" FontSize="20" />
+                        </StackPanel>
+                    </Button>
+
+                   
+                </Grid>
+            </Border>
+
+            --><!--Stempel ud--><!--
+            <Border Background="AliceBlue" CornerRadius="15"
+                Grid.Column="2">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" 
+                        Height="50" Width="250" Grid.Row="0"
+                        Background="DarkRed"
+                        HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="22" Height="22" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel ud" FontSize="20" />
+                        </StackPanel>
+                    </Button>
+                    
+                </Grid>
+            </Border>-->
+
+
+            <!--Indstemplinger-->
+            <Grid Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid >
+                    <TextBlock Text="Stempelur" HorizontalAlignment="Left" FontSize="14" FontWeight="Bold" />
+
+                    <Button Style="{StaticResource addNewMemeberButton}" 
+                            HorizontalAlignment="Right"
+                            Height="40"   Margin="2" >
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel ind uden vagt" FontSize="12" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="0 10 0 0">
+                    <ListView ItemsSource="{Binding TimeEntryCollection}" >
+                        
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0 5 0 10" Width="560">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                        
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Text="{Binding User.FullName}" FontWeight="Bold" 
+                                               Grid.Row="0" Grid.Column="0"/>
+
+                                    <!--<StackPanel Grid.Row="1" Grid.Column="0">
+                                        <TextBlock  Text="Leder:" FontWeight="SemiBold" FontSize="12" />
+                                        <TextBlock Text="{Binding Location.LocationManager.FirstName}" />
+                                    </StackPanel>-->
+                                    
+                                    <StackPanel Grid.Row="0" Grid.Column="1">
+                                        <TextBlock Text="Start:" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding Start}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="1">
+                                        <TextBlock Text="Fyraften:" FontWeight="SemiBold" />
+                                        <TextBlock Text="{Binding End}" />
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding ClockInUserCommand }"
+                                            Grid.Row="0" Grid.Column="2" Margin="0"
+                                            Height="35" HorizontalAlignment="Center"
+                                            >
+                                        <StackPanel Orientation="Horizontal">
+                                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                            <TextBlock Text="Stempel ind" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <StackPanel Grid.Row="1" Grid.Column="2"  >
+                                        <TextBlock Text="Lokation" FontWeight="SemiBold" FontSize="12" />
+                                        <TextBlock Text="{Binding Location.Name}" FontSize="11" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Grid>
+
+            <!--Seperator-->
+            <Grid Grid.Row="1" Margin="0 5 0 5" >
+                <StackPanel>
+                    <Separator></Separator>
+                    <TextBlock Text="Allerede stemplet ind" Margin="145 0 0 0" FontSize="14" FontWeight="Bold"  />
+                </StackPanel>
+            </Grid>
+            
+            <!--Allerede stemplet ind-->
+            <Grid Grid.Row="2" HorizontalAlignment="Center">
+                <ListView ItemsSource="{Binding TimeEntryOutCollection}" >
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0 5 0 10" Width="560">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Text="{Binding User.FullName}" FontWeight="Bold" 
+                                            Grid.Row="0" Grid.Column="0"/>
+
+                                <!--<StackPanel Grid.Row="1" Grid.Column="0">
+                                    <TextBlock  Text="Leder:" FontWeight="SemiBold" FontSize="12" />
+                                    <TextBlock Text="{Binding Location.LocationManager.FirstName}" />
+                                </StackPanel>-->
+
+                                <StackPanel Grid.Row="0" Grid.Column="1">
+                                    <TextBlock Text="Start:" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding Start}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.Column="1">
+                                    <TextBlock Text="Fyraften:" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding End}" />
+                                </StackPanel>
+
+                                <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding ClockOutUserCommand }"
+                                        Grid.Row="0" Grid.Column="2" Margin="0"
+                                        Height="35" HorizontalAlignment="Center"
+                                        Background="OrangeRed"
+                                        >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                        <TextBlock Text="Stempel ud" />
+                                    </StackPanel>
+                                </Button>
+
+                                <StackPanel Grid.Row="1" Grid.Column="2"  >
+                                    <TextBlock Text="Lokation" FontWeight="SemiBold" FontSize="12" />
+                                    <TextBlock Text="{Binding Location.Name}" FontSize="11" />
+                                </StackPanel>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+
+
+
+
+
+            <Grid Grid.Row="1" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+            
+                <TextBlock Text="Indtast dit medarbejder ID:" 
+                           Grid.Row="0" Margin="0 2 0 2" />
+
+                
+                <TextBox Text="{Binding UserID, UpdateSourceTrigger=PropertyChanged, Delay=200}"
+                         Height="35" VerticalContentAlignment="Center"
+                         Grid.Row="1"/>
+
+
+                <TextBlock Text="Er dette dig?"
+                         Height="25" 
+                         Grid.Row="2"/>
+                
+                <TextBlock Text="{Binding FoundUser.FullName, UpdateSourceTrigger=PropertyChanged, Delay=200}"
+                           Grid.Row="3" Margin="0 0 0 0" FontWeight="SemiBold" />
+
+                
+                
+                <TextBlock Text="Job nr:" 
+                           Grid.Row="4" Margin="0 2 0 2" />
+
+                <ComboBox Height="35" VerticalContentAlignment="Center"
+                         Grid.Row="5" ItemsSource="{Binding TimeEntryTypeCollection}"
+                          DisplayMemberPath="Name"
+                          SelectedItem="{Binding SelectedTimeEntryType, UpdateSourceTrigger=PropertyChanged}">
+                    
+                </ComboBox>
+
+                <Grid Grid.Row="6" Margin="0 2 0 2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Style="{StaticResource addNewMemeberButton}" 
+                            HorizontalAlignment="Center"
+                            Height="40"   Margin="2" >
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel Ind" FontSize="20" />
+                        </StackPanel>
+                    </Button>
+
+
+                    <Button Style="{StaticResource addNewMemeberButton}" 
+                            HorizontalAlignment="Center"
+                            Height="40"  Grid.Column="1" Margin="2">
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="ClockOut" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Stempel Ud" FontSize="20" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+              
+            </Grid>
+        </Grid>
+    </Border>
+</Page>

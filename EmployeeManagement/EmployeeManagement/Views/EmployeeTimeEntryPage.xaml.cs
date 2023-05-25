@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagement.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,13 +17,17 @@ using System.Windows.Shapes;
 namespace EmployeeManagement.Views
 {
     /// <summary>
-    /// Interaction logic for EmployeeWorkplanControl.xaml
+    /// Interaction logic for EmployeeTimeEntryPage.xaml
     /// </summary>
-    public partial class EmployeeWorkplanControl : UserControl
+    public partial class EmployeeTimeEntryPage : Page
     {
-        public EmployeeWorkplanControl()
+        public EmployeeTimeEntryViewModel ViewModel { get; set; }
+        
+        public EmployeeTimeEntryPage()
         {
             InitializeComponent();
+            ViewModel = new EmployeeTimeEntryViewModel();
+            this.DataContext = ViewModel;
         }
     }
 }

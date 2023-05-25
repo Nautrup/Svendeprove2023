@@ -33,7 +33,7 @@
                         <!--Menu buttons-->
                         <StackPanel DockPanel.Dock="Top">
 
-                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenDashboardPageCommand}" >
+                            <Button Style="{StaticResource MenuButtons}" >
                                 <StackPanel Orientation="Horizontal">
                                     <Icon:PackIconMaterial Kind="ViewDashboardVariant" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Vagtplan" />
@@ -47,10 +47,10 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenStatisticsPageCommand}">
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeeTimeStampCommand}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Icon:PackIconMaterial Kind="Graph" Style="{StaticResource menuButtonIcon}"/>
-                                    <TextBlock Text="Some crap" />
+                                    <Icon:PackIconMaterial Kind="ClockIn" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Stempel ur" />
                                 </StackPanel>
                             </Button>
 
@@ -70,7 +70,7 @@
             </Grid>
 
             <!--Main Window-->
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Margin="10 10 0 0">
            
                 <!--Frame-->
                 <Frame Grid.Row="1"  NavigationUIVisibility="Hidden" Source="{Binding FramePage, UpdateSourceTrigger=PropertyChanged}">

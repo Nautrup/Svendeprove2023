@@ -5,14 +5,16 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:EmployeeManagement.Views"
       mc:Ignorable="d" 
-      xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeViewModel}"
+      xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+      xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel"
+      d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeViewModel}"
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="EmployeePage">
-    
+
     <Page.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Page.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -94,7 +96,7 @@
         <Grid Grid.Column="1" Grid.Row="2">
             <ListView ItemsSource="{Binding UserCollection}" DisplayMemberPath="FullName"
                       SelectedItem="{Binding SelectedUser}" SelectionMode="Single" >
-               
+
             </ListView>
         </Grid>
 
@@ -103,47 +105,47 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-       
+
             <Grid Grid.Row="0" Background="White" Margin="5">
                 <TabControl TabStripPlacement="Top" FontSize="12" FontWeight="SemiBold" >
                     <!--Medarbejder information-->
                     <TabItem Header="Information" Width="120" >
-           
+
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            
+
                             <!--Data-->
                             <StackPanel>
-                                <!--Navn-->
-                                <Grid VerticalAlignment="Top">
+                                <!--Navn, mellemnavn og efternavn -->
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Navn" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedUser.FirstName}" Grid.Column="1" Height="25" />
+
+                                    <TextBlock Grid.Column="0" Text="Navn" VerticalAlignment="Center" />
+                                    <TextBox Grid.Column="1" Text="{Binding SelectedUser.FirstName}" Height="25" />
+
+
+                                    <TextBlock Grid.Column="2" Text="Mellemnavn:" VerticalAlignment="Center"  Margin="5 0 0 0" />
+                                    <TextBox Grid.Column="3" Text="{Binding SelectedUser.MiddleName}" Height="25" />
+
+                                    <TextBlock Grid.Column="4" Text="Efternavn:" VerticalAlignment="Center"   Margin="5 0 0 0"/>
+                                    <TextBox Grid.Column="5" Text="{Binding SelectedUser.LastName}"  Height="25" />
+
                                 </Grid>
 
-                                <!--Mellemnavn-->
-                                <Grid VerticalAlignment="Top">
+                                <!--Email-->
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Mellemnavn:" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedUser.MiddleName}" Grid.Column="1" Height="25" />
-                                </Grid>
-
-                                <!--Efternavn-->
-                                <Grid VerticalAlignment="Top">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Efternavn:" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedUser.LastName}" Grid.Column="1" Height="25" />
+                                    <TextBlock Text="Email:" VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding SelectedUser.Email}" Grid.Column="1" Height="25" />
                                 </Grid>
 
                                 <!--Alder-->
@@ -156,43 +158,80 @@
                                     <TextBox Text="{Binding SelectedUser.Age}" Grid.Column="1" Height="25" />
                                 </Grid>
 
+
                                 <!--Ansættelses dato-->
-                                <Grid VerticalAlignment="Top">
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Ansættelses dato:" VerticalAlignment="Center" />
-                                    <DatePicker Text="{Binding SelectedUser.FirstDateOfEmployment}" Grid.Column="1" Height="25" />
+                                    <TextBlock Grid.Column="0" Text="Ansættelses dato:" TextWrapping="Wrap" />
+                                    <DatePicker Grid.Column="1" Text="{Binding SelectedUser.FirstDateOfEmployment}"  Height="25" />
+
+                                    <TextBlock  Grid.Column="2" Text="Sidste ansættelses dato:" TextWrapping="Wrap" 
+                                                Margin="5 0 0 0"/>
+                                    <DatePicker Grid.Column="3" Text="{Binding SelectedUser.LastDateOfEmployement}"  Height="25" />
                                 </Grid>
 
                                 <!--Sidste ansættelses dato-->
-                                <Grid VerticalAlignment="Top">
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Sidste ansættelses dato:" TextWrapping="Wrap" VerticalAlignment="Center" />
-                                    <DatePicker Text="{Binding SelectedUser.LastDateOfEmployement}" Grid.Column="1" Height="25" />
+
                                 </Grid>
 
                                 <!--Lokation-->
-                                <Grid VerticalAlignment="Bottom">
+                                <Grid VerticalAlignment="Bottom" Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="auto" />
+                                      
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
-                                    <ComboBox ItemsSource="{Binding CompanyCollection}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              SelectedItem="{Binding SelecedCompany, UpdateSourceTrigger=PropertyChanged}">
+                                    <ListView ItemsSource="{Binding LocationCollection}" DisplayMemberPath="Name"  Grid.Column="1"
+                                              Height="25" >
 
-                                    </ComboBox>
+                                    </ListView>
+                                    
+                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
+                                            Width="50" Height="25">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" />
+                                        </StackPanel>
+                                    </Button>
+                                </Grid>
+
+                                <!--Firma-->
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100" />
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Firma:" VerticalAlignment="Center" />
+                                    <ListView ItemsSource="{Binding CompanyCollection}" DisplayMemberPath="Name"  Grid.Column="1"
+                                              SelectedItem="{Binding SelecedCompany, UpdateSourceTrigger=PropertyChanged}"
+                                               >
+                                     
+                                    </ListView>
+                                    
+                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
+                                            Width="50" Height="25">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" />
+                                        </StackPanel>
+                                    </Button>
                                 </Grid>
 
                                 <!--Billede-->
-                                <Grid VerticalAlignment="Top">
+                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
 
-                                    <StackPanel Grid.Column="1" Margin="5 0 0 5">
+                                    <StackPanel Grid.Column="1">
                                         <!--Profil billede-->
                                         <Grid VerticalAlignment="Top">
                                             <Grid.RowDefinitions>
@@ -200,28 +239,31 @@
                                                 <RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
                                             <TextBlock Text="Billede" />
-                                            <Image Width="50" Height="50" HorizontalAlignment="Left" Grid.Row="1"
-                                                     Source="/Resources/defaultuser.png" >
+                                            <Border BorderThickness="1" Width="150" Height="150" HorizontalAlignment="Left" Grid.Row="1" Background="OrangeRed">
+                                                <Image Width="150" Height="150" Source="/Resources/defaultuser.png" >
 
                                             </Image>
-
+                                            </Border>
                                         </Grid>
 
-                                        <!--Navn-->
-                                        <Grid VerticalAlignment="Top">
+                                        <!--Upload billed-->
+                                        <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="100" />
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="" VerticalAlignment="Center" />
-                                            <TextBlock Text="" Grid.Column="1" Height="25" />
+                                            <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Icon:PackIconMaterial Kind="Upload" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                                    <TextBlock Text="Upload" />
+                                                </StackPanel>
+                                            </Button>
                                         </Grid>
                                     </StackPanel>
                                 </Grid>
                             </StackPanel>
 
                             <!--Actions-->
-                            <Grid VerticalAlignment="Bottom" >
+                            <Grid VerticalAlignment="Bottom" Margin="0 5 0 5" >
                                 <StackPanel Orientation="Horizontal">
                                     <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding UpdateUserInformationCommand}" Margin="5 0 5 0" >
                                         <StackPanel Orientation="Horizontal">
@@ -230,7 +272,7 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CreateEmployeeCommand}" Margin="5 0 5 0">
+                                    <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding ShowCreateWindowCommand}" Margin="5 0 5 0">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
                                             <TextBlock Text="Opret medarbejder" />
@@ -247,10 +289,10 @@
 
                             </Grid>
 
-                           
+
                         </Grid>
                     </TabItem>
-                    
+
                     <!--Vagtplan-->
                     <TabItem Header="Vagtplan" Width="120" >
                         <!--<local:EmployeeWorkplanControl DataContext="" />-->
@@ -294,13 +336,12 @@
                                 </Grid>
                             </Grid>
 
-
                             <!--Mandag-->
                             <StackPanel Grid.Column="0" Grid.Row="1">
                                 <TextBlock Text="Mandag" VerticalAlignment="Top" HorizontalAlignment="Center"
                        FontSize="24" FontWeight="Bold"/>
 
-                                <TextBlock Text="24/05" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                <TextBlock Text="{Binding CurrentWeekStartDate.Date, StringFormat='dd/MM/y'}" VerticalAlignment="Bottom" HorizontalAlignment="Center"
                     FontSize="14" FontWeight="SemiBold" />
 
                             </StackPanel>
@@ -358,12 +399,22 @@
                                 <TextBlock Text="30/05" VerticalAlignment="Bottom" HorizontalAlignment="Center"
                     FontSize="14" FontWeight="SemiBold" />
                             </StackPanel>
-                            
+
                             <!--Mandag ITEMS-->
                             <Grid Grid.Column="0" Grid.Row="2">
-                                <ListView >
-                                    <ListViewItem Content="WORK AT: 14:00 - 21:30"></ListViewItem>
-                                    
+                                <ListView ItemsSource="{Binding TimeEntriesCollection}" >
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Start, StringFormat='hh\\:mm'}" Width="50" />
+                                                <TextBlock Text=" -> " Width="30" />
+                                                <TextBlock Text="{Binding End, StringFormat='hh\\:mm'}" Width="50" />
+                                                <TextBlock Text="{Binding Duration}" Width="auto" />
+                                                <TextBlock Text="T" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+
                                 </ListView>
                             </Grid>
 
@@ -415,12 +466,12 @@
 
                         </Grid>
                     </TabItem>
-              
+
                 </TabControl>
             </Grid>
 
-          
-            
+
+
         </Grid>
     </Grid>
 </Page>

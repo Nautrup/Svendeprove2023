@@ -1,0 +1,148 @@
+﻿<Window x:Class="EmployeeManagement.Views.CreateEmployeeView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmployeeManagement.Views"
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        mc:Ignorable="d"
+        Title="CreateEmployeeView" Height="450" Width="800">
+    <Grid>
+
+        <!--Data-->
+        <StackPanel>
+            <!--Navn, mellemnavn og efternavn -->
+            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Navn" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1" Text="{Binding SelectedUser.FirstName}" Height="25" />
+
+
+                <TextBlock Grid.Column="2" Text="Mellemnavn:" VerticalAlignment="Center"  Margin="5 0 0 0" />
+                <TextBox Grid.Column="3" Text="{Binding SelectedUser.MiddleName}" Height="25" />
+
+                <TextBlock Grid.Column="4" Text="Efternavn:" VerticalAlignment="Center"   Margin="5 0 0 0"/>
+                <TextBox Grid.Column="5" Text="{Binding SelectedUser.LastName}"  Height="25" />
+
+            </Grid>
+
+            <!--Ansættelses dato-->
+            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Ansættelses dato:" TextWrapping="Wrap" />
+                <DatePicker Grid.Column="1" Text="{Binding SelectedUser.FirstDateOfEmployment}"  Height="25" />
+
+                <TextBlock  Grid.Column="2" Text="Sidste ansættelses dato:" TextWrapping="Wrap" 
+                                                Margin="5 0 0 0"/>
+                <DatePicker Grid.Column="3" Text="{Binding SelectedUser.LastDateOfEmployement}"  Height="25" />
+            </Grid>
+
+            <!--Email-->
+            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Email:" VerticalAlignment="Center" />
+                <TextBox Text="{Binding SelectedUser.Email}" Grid.Column="1" Height="25" />
+            </Grid>
+
+            <!--Alder-->
+            <Grid VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Alder:" VerticalAlignment="Center" />
+                <TextBox Text="{Binding SelectedUser.Age}" Grid.Column="1" Height="25" />
+            </Grid>
+
+            <!--Lokation-->
+            <Grid VerticalAlignment="Bottom" Margin="0 5 0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding LocationCollection}" DisplayMemberPath="Name"  Grid.Column="1"
+                                              Height="25" >
+                </ComboBox>
+            </Grid>
+
+            <!--Firma-->
+            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Firma:" VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding CompanyCollection}" DisplayMemberPath="Name"  Grid.Column="1"
+                                              SelectedItem="{Binding SelecedCompany, UpdateSourceTrigger=PropertyChanged}"
+                                              IsReadOnly="True" >
+
+                </ComboBox>
+            </Grid>
+
+            <!--Billede-->
+            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+
+                <StackPanel Grid.Column="1">
+                    <!--Profil billede-->
+                    <Grid VerticalAlignment="Top">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Billede" />
+                        <Image Width="150" Height="150" HorizontalAlignment="Left" Grid.Row="1"
+                                                     Source="/Resources/defaultuser.png" >
+
+                        </Image>
+                    </Grid>
+
+                    <!--Upload billed-->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+                            <StackPanel Orientation="Horizontal">
+                                <Icon:PackIconMaterial Kind="Upload" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                <TextBlock Text="Upload" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+
+        <!--Actions-->
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0 5 0 5" >
+            <StackPanel Orientation="Horizontal">
+
+                <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CreateNewUserCommand}" Margin="5 0 5 0">
+                    <StackPanel Orientation="Horizontal">
+                        <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                        <TextBlock Text="Opret medarbejder" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+
+
+    </Grid>
+</Window>

@@ -15,7 +15,7 @@ namespace EmployeeManagement.Models
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string FullName { get { return $"{FirstName} {MiddleName} {LastName}"; } }
-        public string Surname { get; set; }
+        public string Email { get; set; }
         public int Age { get; set; }
         public int ProfileImage { get; set; }
         public List<int> TimeTagCollection { get; set; }
@@ -23,14 +23,19 @@ namespace EmployeeManagement.Models
         public DateTime LastDateOfEmployement { get; set; }
         public List<Location> Location { get; set; }
 
-        public void UpdateInformation()
+        public void Update()
         {
-            
+            // Api til update
         }
 
         public void Create()
         {
+            // Api til insert
+        }
 
+        public void Delete()
+        {
+            // Api til slet
         }
         
     }

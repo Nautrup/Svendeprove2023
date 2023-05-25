@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace EmployeeManagement.ViewModel
@@ -14,15 +15,16 @@ namespace EmployeeManagement.ViewModel
         {
             OpenEmployeePageCommand = new RelayCommand(o => { OpenEmployeePage(); });
             OpenEmployeeWorkplanPageCommand = new RelayCommand(o => { OpenEmployeeWorkplanPage(); });
+            OpenEmployeeTimeStampCommand = new RelayCommand(o => OpenEmployeeTimeStamp());
         }
 
         
 
 
         #region ICommands
-
         public ICommand OpenEmployeePageCommand { get; set; }
         public ICommand OpenEmployeeWorkplanPageCommand { get; set; }
+        public ICommand OpenEmployeeTimeStampCommand  { get; set; }
         #endregion
 
         public string FramePage 
@@ -44,6 +46,11 @@ namespace EmployeeManagement.ViewModel
         private void OpenEmployeePage()
         {
             FramePage = "Views/EmployeePage.xaml";
+        }
+
+        private void OpenEmployeeTimeStamp()
+        {
+            FramePage = "Views/EmployeeTimeEntryPage.xaml";
         }
         #endregion
 
