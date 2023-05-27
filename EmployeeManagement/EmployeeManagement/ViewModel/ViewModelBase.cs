@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagement.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace EmployeeManagement.ViewModel
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
+        public static User CurrentLoggedInUser { get; set; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged(string propertyName)
         {

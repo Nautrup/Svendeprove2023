@@ -1,4 +1,7 @@
 ﻿using EmployeeManagement.Common;
+using EmployeeManagement.Models;
+using EmployeeManagement.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +19,10 @@ namespace EmployeeManagement.ViewModel
             OpenEmployeePageCommand = new RelayCommand(o => { OpenEmployeePage(); });
             OpenEmployeeWorkplanPageCommand = new RelayCommand(o => { OpenEmployeeWorkplanPage(); });
             OpenEmployeeTimeStampCommand = new RelayCommand(o => OpenEmployeeTimeStamp());
+
         }
 
-        
-
+       
 
         #region ICommands
         public ICommand OpenEmployeePageCommand { get; set; }
@@ -38,6 +41,9 @@ namespace EmployeeManagement.ViewModel
         }
 
         #region methods
+
+       
+
         private void OpenEmployeeWorkplanPage()
         {
             FramePage = "Views/EmployeePage.xaml";
@@ -55,8 +61,8 @@ namespace EmployeeManagement.ViewModel
         #endregion
 
         #region Private Variables
-
         private string _framePage = "Views/WelcomePage.xaml";
+
         #endregion
     }
 }

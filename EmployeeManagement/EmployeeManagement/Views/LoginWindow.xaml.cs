@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagement.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,12 @@ namespace EmployeeManagement.Views
     /// </summary>
     public partial class LoginWindow : Window
     {
+        public LoginViewModel ViewModel { get; set; }
         public LoginWindow()
         {
             InitializeComponent();
+            ViewModel  = new LoginViewModel();
+            DataContext = ViewModel;
         }
     }
 }

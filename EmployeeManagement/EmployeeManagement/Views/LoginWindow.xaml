@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         WindowStyle="none"
         Title="LoginWindow" 
-        Height="460" Width="800">
+        Height="500" Width="800">
     <Border CornerRadius="15"
             BorderThickness="3" >
         <Border.BorderBrush>
@@ -62,11 +62,13 @@
                         Orientation="Vertical"
                         Margin="0 35 0 0">
                 <Icon:PackIconRemixIcon Kind="AccountBoxLine" Foreground="White" Width="100" Height="80" HorizontalAlignment="Center"/>
-                <TextBlock Text="Medarbejder" HorizontalAlignment="Center" Margin="0 10 0 0"
-                           FontSize="25" FontWeight="SemiBold" FontFamily="Montserrat"
+                <TextBlock Text="Medarbejder system" HorizontalAlignment="Center" Margin="0 10 0 0"
+                           FontSize="20" FontWeight="SemiBold" FontFamily="Montserrat"
                            Foreground="White"/>
-
-                <TextBlock Text="Brugernavn (Email adresse)"
+                <TextBlock Text="Sigurd" HorizontalAlignment="Center" Margin="0 10 0 0"
+                           FontSize="20" FontWeight="SemiBold" FontFamily="Montserrat"
+                           Foreground="White"/>
+                <TextBlock Text="Brugernavn"
                            Foreground="DarkGray"
                            FontSize="12"
                            FontWeight="Medium"
@@ -76,7 +78,7 @@
                 <TextBox FontSize="13"
                         FontWeight="Medium" FontFamily="Montserrat" Foreground="White"
                         Background="Transparent" BorderThickness="0 0 0 3" BorderBrush="DarkGray" 
-                         Text="{Binding EmailAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
 
                 <TextBlock Text="Adgangskode"
                            Foreground="DarkGray"
@@ -87,11 +89,11 @@
                 <TextBox FontSize="13"
                         FontWeight="Medium" FontFamily="Montserrat" Foreground="White"
                         Background="Transparent" BorderThickness="0 0 0 3" BorderBrush="DarkGray" 
-                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
 
 
                 <Button Style="{StaticResource addNewMemeberButton}" HorizontalAlignment="Center" 
-                        Command="{Binding AuthorizeUserCommand}">
+                        Command="{Binding AuthenticateCommand}">
                     <StackPanel Orientation="Horizontal">
                         <Icon:PackIconMaterial Kind="Login"  Margin="0 0 5 0"/>
                         <TextBlock Text="Log ind" />

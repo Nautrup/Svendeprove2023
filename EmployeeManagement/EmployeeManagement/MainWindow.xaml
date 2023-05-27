@@ -25,7 +25,7 @@
                 <Border Grid.Row="1" Background="#06283D" CornerRadius="0 50 0 30">
                     <DockPanel>
                         <!--Menu Title-->
-                        <TextBlock Text="Logo" Foreground="White" FontSize="22" FontWeight="SemiBold"
+                        <TextBlock Text="{Binding CurrentLoggedInUser.FirstName}" Foreground="White" FontSize="22" FontWeight="SemiBold"
                                    DockPanel.Dock="Top" TextAlignment="Center" />
 
                         <Separator Margin="25" DockPanel.Dock="Top" Height="0.8" Background="#7e5fdc" />

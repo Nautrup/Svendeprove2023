@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.ViewModel;
+﻿using EmployeeManagement.Models;
+using EmployeeManagement.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,10 @@ namespace EmployeeManagement
     public partial class MainWindow : Window
     {
         public MainViewModel ViewModel { get; set; }
-        public MainWindow()
+        
+        public MainWindow(User currentLoggedIn)
         {
+            ViewModelBase.CurrentLoggedInUser = currentLoggedIn;
             InitializeComponent();
             ViewModel = new MainViewModel();
             this.DataContext = ViewModel;

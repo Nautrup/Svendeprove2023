@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmployeeManagement.Views"
-        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:CreateEmployeeViewModel}"
         mc:Ignorable="d"
         Title="CreateEmployeeView" Height="450" Width="800">
     <Grid>
