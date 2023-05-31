@@ -46,7 +46,7 @@ namespace EmployeeManagement.ViewModel
 
         private void OpenEmployeeWorkplanPage()
         {
-            FramePage = "Views/EmployeePage.xaml";
+            FramePage = "Views/WorkplanPage.xaml";
         }
 
         private void OpenEmployeePage()

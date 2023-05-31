@@ -23,14 +23,14 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="Navn" VerticalAlignment="Center" />
-                <TextBox Grid.Column="1" Text="{Binding SelectedUser.FirstName}" Height="25" />
+                <TextBox Grid.Column="1" Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Height="25" />
 
 
                 <TextBlock Grid.Column="2" Text="Mellemnavn:" VerticalAlignment="Center"  Margin="5 0 0 0" />
-                <TextBox Grid.Column="3" Text="{Binding SelectedUser.MiddleName}" Height="25" />
+                <TextBox Grid.Column="3" Text="{Binding MiddleName, UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}" Height="25" />
 
                 <TextBlock Grid.Column="4" Text="Efternavn:" VerticalAlignment="Center"   Margin="5 0 0 0"/>
-                <TextBox Grid.Column="5" Text="{Binding SelectedUser.LastName}"  Height="25" />
+                <TextBox Grid.Column="5" Text="{Binding Surname , UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  Height="25" />
 
             </Grid>
 
@@ -43,32 +43,34 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Ansættelses dato:" TextWrapping="Wrap" />
-                <DatePicker Grid.Column="1" Text="{Binding SelectedUser.FirstDateOfEmployment}"  Height="25" />
+                <DatePicker Grid.Column="1" SelectedDate="{Binding FirstDateOfEmployment, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"  Height="25"
+                            />
 
                 <TextBlock  Grid.Column="2" Text="Sidste ansættelses dato:" TextWrapping="Wrap" 
                                                 Margin="5 0 0 0"/>
-                <DatePicker Grid.Column="3" Text="{Binding SelectedUser.LastDateOfEmployement}"  Height="25" />
+                <DatePicker Grid.Column="3" SelectedDate ="{Binding LastDateOfEmployement, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
+                            Height="25" />
             </Grid>
 
-            <!--Email-->
+            <!--Email--><!--
             <Grid VerticalAlignment="Top" Margin="0 5 0 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Email:" VerticalAlignment="Center" />
-                <TextBox Text="{Binding SelectedUser.Email}" Grid.Column="1" Height="25" />
+                <TextBox Text="{Binding Email}" Grid.Column="1" Height="25" />
             </Grid>
 
-            <!--Alder-->
+            --><!--Alder--><!--
             <Grid VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Alder:" VerticalAlignment="Center" />
-                <TextBox Text="{Binding SelectedUser.Age}" Grid.Column="1" Height="25" />
-            </Grid>
+                <TextBox Text="{Binding Age}" Grid.Column="1" Height="25" />
+            </Grid>-->
 
             <!--Lokation-->
             <Grid VerticalAlignment="Bottom" Margin="0 5 0 5">
@@ -77,22 +79,54 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
-                <ComboBox ItemsSource="{Binding LocationCollection}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              Height="25" >
+                <ComboBox ItemsSource="{Binding LocationCollection}" Grid.Column="1"
+                          Height="25"
+                          SelectedItem="{Binding SelectedLocation , UpdateSourceTrigger=PropertyChanged}" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel  Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+
+                            </Grid>
+                            
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
             </Grid>
 
-            <!--Firma-->
-            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+            <!--Roller-->
+            <Grid VerticalAlignment="Bottom" Margin="0 5 0 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Firma:" VerticalAlignment="Center" />
-                <ComboBox ItemsSource="{Binding CompanyCollection}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              SelectedItem="{Binding SelecedCompany, UpdateSourceTrigger=PropertyChanged}"
-                                              IsReadOnly="True" >
+                <TextBlock Text="Rolle:" VerticalAlignment="Center" />
+                <ComboBox ItemsSource="{Binding UserRoleCollection}" Grid.Column="1"
+                          Height="25"
+                          SelectedItem="{Binding SelectedUserRole , UpdateSourceTrigger=PropertyChanged}" >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
 
+                                <StackPanel  Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" />
+                                </StackPanel>
+
+                            </Grid>
+
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
             </Grid>
 
@@ -118,7 +152,8 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+                        <Button Style="{StaticResource addNewMemeberButton}" 
+                                Margin="5,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
                             <StackPanel Orientation="Horizontal">
                                 <Icon:PackIconMaterial Kind="Upload" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
                                 <TextBlock Text="Upload" />
@@ -126,6 +161,7 @@
                         </Button>
                     </Grid>
                 </StackPanel>
+                
             </Grid>
         </StackPanel>
 

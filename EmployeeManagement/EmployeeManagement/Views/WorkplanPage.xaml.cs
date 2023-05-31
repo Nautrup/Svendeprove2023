@@ -11,25 +11,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace EmployeeManagement.Views
 {
     /// <summary>
-    /// Interaction logic for CreateEmployeeView.xaml
+    /// Interaction logic for WorkplanPage.xaml
     /// </summary>
-    public partial class CreateEmployeeView : Window
+    public partial class WorkplanPage : Page
     {
-        public CreateEmployeeViewModel ViewModel { get; set; }
-
-        public CreateEmployeeView()
+        public WorkplanViewModel ViewModel { get; set; }
+        public WorkplanPage()
         {
             InitializeComponent();
-
-            ViewModel = new CreateEmployeeViewModel();
-            if (ViewModel.CloseWindowAction == null)
-                ViewModel.CloseWindowAction = new Action(this.Close);
-            
+            ViewModel = new WorkplanViewModel();
             DataContext = ViewModel;
         }
     }

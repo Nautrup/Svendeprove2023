@@ -18,6 +18,8 @@ namespace EmployeeManagement.Services
         public static string EndPoint = "http://localhost:6969";
 
         public static WebClient Client { get; set; }
+        public static string Token { get; set; }
+
 
         public static void InitializeClient()
         {
@@ -25,7 +27,7 @@ namespace EmployeeManagement.Services
 
             Client.BaseAddress = EndPoint;
 
-            Client.Headers.Add("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTY4NTAzNzgyNzc4NCwiaXN0IjoxNjg1MDM3ODI1OTg0LCJpc3MiOiJCb25nb3RydW1tZXIiLCJqdGkiOiJmZjI3NDU5Zi1hMzIxLTQwYjMtOGFiZS00NWY3MGE1MWMwZDMifQ.eyJ0eXAiOiJhY2Nlc3MiLCJ1aWQiOjEsImNpZCI6MX0.u-iyd89k__gNei_03sZsHxJq4r7aXFgHDEfU3abdP7o");
+            Client.Headers.Add("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTY4NTUzNDkyOTY2MiwiaXN0IjoxNjg1NTM0OTI3ODYyLCJpc3MiOiJCb25nb3RydW1tZXIiLCJqdGkiOiIzYjAzNzYwYy1kZjE1LTQ0YWMtODgzNS02NTU2MTQ1ZWRiM2YifQ.eyJ0eXAiOiJhY2Nlc3MiLCJ1aWQiOjEsImNpZCI6MSwicmlkIjoxLCJmbG4iOiJIYW5zIFBldGVyIiwiaGR0IjoxMzY3Mzk2NzczLCJmZHQiOm51bGx9.KR9oyoAb1Vsz15TkjFETQcE3TVEMyfMrgBb0Bv-UDAU");
             
             Client.Headers.Add("Accept", "application/json");
             Client.Headers["Content-Type"] = "application/json";
@@ -41,14 +43,16 @@ namespace EmployeeManagement.Services
         public static string Post(string endpoint, string jsonData)
         {
             // Response
-            return ApiHelper.Client.UploadString(ApiHelper.EndPoint = endpoint, jsonData);
+            Client.Headers["Content-Type"] = "application/json";
+            string response = ApiHelper.Client.UploadString(ApiHelper.EndPoint = endpoint, jsonData); 
+            return response;
         }
 
         public static string Get(string endpoint, Dictionary<string, string>? parameters = null)
         {
             var builder = new StringBuilder();
             builder.Append(endpoint);
-
+            Client.Headers["Content-Type"] = "application/json";
             if (parameters != null && parameters.Count > 0)
             {
                 builder.Append("?");
@@ -60,6 +64,7 @@ namespace EmployeeManagement.Services
 
             return Client.DownloadString(builder.ToString());
         }
+
 
     }
 }

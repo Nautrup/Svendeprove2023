@@ -99,10 +99,15 @@
                 </Grid.RowDefinitions>
 
                 <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <TextBlock Text="Stempelur" HorizontalAlignment="Left" FontSize="14" FontWeight="Bold" />
 
                     <Button Style="{StaticResource addNewMemeberButton}" 
                             HorizontalAlignment="Right"
+                            Grid.Column="1"
                             Height="40"   Margin="2" >
                         <StackPanel Orientation="Horizontal">
                             <Icon:PackIconMaterial Kind="ClockIn" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
@@ -111,6 +116,7 @@
                     </Button>
                 </Grid>
 
+                    
                 <Grid Grid.Row="1" Margin="0 10 0 0">
                     <ListView ItemsSource="{Binding TimeEntryCollection}" >
                         

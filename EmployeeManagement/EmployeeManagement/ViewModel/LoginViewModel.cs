@@ -24,7 +24,7 @@ namespace EmployeeManagement.ViewModel
         public LoginViewModel()
         {
             ApiHelper.InitializeClient();
-            
+
             AuthenticateCommand = new RelayCommand(o => AuthenticateUser());
             CloseWindowCommand = new RelayCommand(o => Application.Current.Shutdown());
         }
@@ -69,16 +69,18 @@ namespace EmployeeManagement.ViewModel
 
                 // laver bruger object til json
                 string? json = JsonConvert.SerializeObject(login);
-
-                //string stream = ApiHelper.Client.UploadString(ApiHelper.EndPoint, json);
-
                 string stream = ApiHelper.Post("/auth/authenticate", json);
 
-                User user = new()
-                {
-                    FirstName = "Jonas"
-                };
+                ApiAuthenticationData apiData = JsonConvert.DeserializeObject<ApiAuthenticationData>(stream);
+
+                // Henter den authenticated brugers information
+                string response = ApiHelper.Get(endpoint: "/user/current");
                 
+                
+                // Laver det til C# object
+                User user = JsonConvert.DeserializeObject<User>(response);
+                
+                // Viser mainform
                 MainWindow window = new MainWindow(user);
                 window.Show();
             }
@@ -87,16 +89,13 @@ namespace EmployeeManagement.ViewModel
                 exceptionHttpHelper = new(ex);
                 
                 MessageBox.Show($"{(int)exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl");
-            } catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}", "Fejl");
             }
         }
         #endregion
 
         #region  Private Variables
-        private string _password;
-        private string _userName;
+        private string _password = "hpp";
+        private string _userName = "hpp";
         #endregion
     }
 }

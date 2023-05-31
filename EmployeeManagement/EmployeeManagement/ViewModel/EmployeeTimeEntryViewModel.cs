@@ -21,7 +21,6 @@ namespace EmployeeManagement.ViewModel
             ClockInUserCommand = new RelayCommand(o => ClockInUser(FoundUser));
             LoadTimeEntryTypes();
             LoadUsers();
-            LoadTimeEntries();
         }
 
         public ICommand ClockInUserCommand { get; set; }
@@ -92,24 +91,6 @@ namespace EmployeeManagement.ViewModel
             MessageBox.Show($"{FoundUser.FullName}\n\nDin udstempliong blev godkendt\n\nTid:{DateTime.Now}", "Godkendt stempling registeret", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // Henter TimeEntries
-        private void LoadTimeEntries()
-        {
-            TimeEntryCollection.Clear();
-
-            foreach (TimeEntry timeEntry in UserService.GetTimeEntries(entryType: SelectedTimeEntryType).Where(x => x.Location.ID == CurrentLocationID))
-            {
-                timeEntry.ClockInUserCommand = new RelayCommand(o => 
-                { 
-                    ClockInUser(timeEntry.User);
-                    timeEntry.ClockOutUserCommand = new RelayCommand(o => { ClockOutUser(timeEntry.User); TimeEntryOutCollection.Remove(timeEntry); });
-                    TimeEntryOutCollection.Add(timeEntry);
-                    TimeEntryCollection.Remove(timeEntry);
-                });
-
-                TimeEntryCollection.Add(timeEntry);
-            }
-        }
 
         // Tjekker om vi har en bruger med det indastede Medarbejder ID
         private void CheckForExistingUser(User userId)
@@ -131,10 +112,10 @@ namespace EmployeeManagement.ViewModel
         {
             UserCollection.Clear();
 
-            foreach (var user in UserService.GetUsers())
-            {
-                UserCollection.Add(user);
-            }
+            //foreach (var user in UserService.GetUsers())
+            //{
+            //    UserCollection.Add(user);
+            //}
         }
 
         // Henter vores TimeEntryTypes

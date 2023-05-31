@@ -25,12 +25,19 @@ namespace EmployeeManagement.Common
             {
                 using (HttpWebResponse res = ex.Response as HttpWebResponse)
                 {
-                    using (Stream test = res.GetResponseStream())
+                    if (res != null)
                     {
-                        StreamReader reader = new StreamReader(test);
-                        StatusCode = (int)res.StatusCode;
-                        StatusDescription = res.StatusDescription;
-                        ErrorMessage = reader.ReadToEnd();
+                        using (Stream test = res.GetResponseStream())
+                        {
+                            StreamReader reader = new StreamReader(test);
+                            StatusCode = (int)res.StatusCode;
+                            StatusDescription = res.StatusDescription;
+                            ErrorMessage = reader.ReadToEnd();
+                        }
+                    }
+                    else
+                    {
+                        ErrorMessage = $"ERROR (WebSocket) NoResponse: {ex.Message}" ;
                     }
                 }
             }
