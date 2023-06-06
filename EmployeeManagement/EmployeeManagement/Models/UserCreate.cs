@@ -25,8 +25,6 @@ namespace EmployeeManagement.Models
         public long? FiredDate { get; set; }
         public List<int> LocationIds { get; set; }
 
-        
-
         /// <summary>
         /// Opretter en ny bruger
         /// </summary>
@@ -66,6 +64,59 @@ namespace EmployeeManagement.Models
                 
             }
             
+        }
+
+        /// <summary>
+        /// Opdatere bruger information
+        /// </summary>
+        /// <param name="user"></param>
+        public void Update(User user)
+        {
+            // Api til update
+
+            using (ApiHelper.Client)
+            {
+
+                UserCreate newUser = new UserCreate()
+                {
+                    UserRoleId = user.UserRole.Id,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    SurName = user.SurName,
+                    ProfileImage = user.ProfileImage,
+                    HiredDate = user.HiredDate,
+                    //FiredDate = user.FiredDate
+                };
+
+                if (string.IsNullOrEmpty(MiddleName))
+                {
+                    MiddleName = null;
+                }
+
+                List<int> ids = new List<int>();
+
+                foreach (var location in user.Locations)
+                {
+                    ids.Add(location.ID);
+                }
+
+                newUser.LocationIds = ids;
+
+                var jsonData = JsonConvert.SerializeObject(newUser);
+
+                ApiHelper.Put($"/user/{user.ID}", jsonData);
+
+            }
+
+        }
+
+        /// <summary>
+        /// Sletter en bruger
+        /// </summary>
+        /// <param name="user"></param>
+        public void Delete(User user)
+        {
+
         }
 
     }

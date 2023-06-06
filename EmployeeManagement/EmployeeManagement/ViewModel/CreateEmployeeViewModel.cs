@@ -116,6 +116,7 @@ namespace EmployeeManagement.ViewModel
 
 
                 UserCreate newBruger = new UserCreate();
+
                 newBruger.Create(newUser);
 
 

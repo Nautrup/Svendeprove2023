@@ -1,10 +1,12 @@
 ﻿using EmployeeManagement.Common;
 using EmployeeManagement.Models;
 using EmployeeManagement.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,12 +17,13 @@ namespace EmployeeManagement.ViewModel
 {
     public class EmployeeTimeEntryViewModel : ViewModelBase
     {
-
+        private ExceptionHttpHelper exceptionHttpHelper;
+        private int DUMMYTESTLOCATIONID = 3;
         public EmployeeTimeEntryViewModel()
         {
-            ClockInUserCommand = new RelayCommand(o => ClockInUser(FoundUser));
             LoadTimeEntryTypes();
-            LoadUsers();
+           
+            LoadTimeEntries(DUMMYTESTLOCATIONID);
         }
 
         public ICommand ClockInUserCommand { get; set; }
@@ -29,6 +32,7 @@ namespace EmployeeManagement.ViewModel
         public ObservableCollection<User> UserCollection { get; set; } = new();
 
         public ObservableCollection<TimeEntryType> TimeEntryTypeCollection { get; set; } = new();
+
         public ObservableCollection<TimeEntry> TimeEntryCollection { get; set; } = new();
 
         public ObservableCollection<TimeEntry> TimeEntryOutCollection { get; set; } = new();
@@ -60,68 +64,102 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-        // Nuværende lokation
-        public int CurrentLocationID { get; set; } = 1;
+        private DateTime CurrentDate = DateTime.UtcNow;
         
         // Stempler bruger ind
-        private void ClockInUser(User user)
+        private void ClockInUser(TimeEntry currentEntry)
         {
             try
             {
-                if (user == null)
+                if (currentEntry == null)
                 {
-                    throw new MissingFieldException(nameof(UserID));
+                    throw new MissingFieldException(nameof(currentEntry.User.ID));
                 }
 
-                CheckForExistingUser(user);
-
                 // ERSSTATTES AF SQL TIL INSERT NY STEMPLING
-                MessageBox.Show($"{FoundUser.FullName}\nID:{user.ID}\nStemplet ind godkendt!\n{DateTime.Now}", "Godkendt stempling registeret", MessageBoxButton.OK, MessageBoxImage.Information);
-                
+                MessageBox.Show($"{currentEntry.User.FullName}\nStemplet ind godkendt!\n{DateTime.Now}", "Godkendt stempling registeret", MessageBoxButton.OK, MessageBoxImage.Information);
+                TimeEntryCollection.Remove(currentEntry);
+                TimeEntryOutCollection.Add(currentEntry);
             }
             catch (MissingFieldException exception)
             {
-                MessageBox.Show($"{exception.Message} mangler", "Indtastning af medarbejder ID mangler");
+                MessageBox.Show($"{exception.Message} mangler", "Information mangler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }
 
-        private void ClockOutUser(User user) 
+        private void ClockOutUser(TimeEntry currentEntry) 
         {
-            MessageBox.Show($"{FoundUser.FullName}\n\nDin udstempliong blev godkendt\n\nTid:{DateTime.Now}", "Godkendt stempling registeret", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-
-        // Tjekker om vi har en bruger med det indastede Medarbejder ID
-        private void CheckForExistingUser(User userId)
-        {
-            for (int i = 0; i < UserCollection.Count; i++)
-            {
-                if (UserCollection[i].ID == userId.ID)
-                {
-                    FoundUser = UserCollection[i];
-                    return;
-                }
-
-                FoundUser = null;
-            }
+            MessageBox.Show($"{currentEntry.User.FullName}\n\nDin udstempliong blev godkendt\n\nTid:{DateTime.Now}", "Godkendt stempling registeret", MessageBoxButton.OK, MessageBoxImage.Information);
+            TimeEntryOutCollection.Remove(currentEntry);
         }
 
         // Henter vores brugere
-        private void LoadUsers()
+        private User GetUser(int userId)
         {
-            UserCollection.Clear();
+            try
+            {
+                using (ApiHelper.Client)
+                {
+                    UserCollection.Clear();
 
-            //foreach (var user in UserService.GetUsers())
-            //{
-            //    UserCollection.Add(user);
-            //}
+                    string json = ApiHelper.Get($"/user/{userId}");
+
+                    return JsonConvert.DeserializeObject<User>(json);
+                 
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+                return null;
+            }
+        }
+
+        private void LoadTimeEntries(int locationId)
+        {
+            try
+            {
+                using (ApiHelper.Client)
+                {
+                    TimeEntryCollection.Clear();
+
+                    string json = ApiHelper.Get($"/entries?location={locationId}");
+
+                    var list = JsonConvert.DeserializeObject<List<TimeEntry>>(json);
+                    // Looper gennem hver bruger, tilføjer lokationer derefter i collection af brugere
+                    foreach (var entry in list)
+                    {
+                        entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start);
+                        entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
+                        
+                        if (entry.StartDate.Date == CurrentDate.Date)
+                        {
+                            entry.User = GetUser(entry.UserId);
+                            entry.ClockInUserCommand = new RelayCommand(o => ClockInUser(entry));
+                            entry.ClockOutUserCommand = new RelayCommand(o => ClockOutUser(entry));
+                            TimeEntryCollection.Add(entry);
+                        }
+                        
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            }
         }
 
         // Henter vores TimeEntryTypes
         private void LoadTimeEntryTypes()
         {
             TimeEntryTypeCollection.Clear();
+
+
 
             foreach (var type in TimeEntyService.GetEntryTypes())
             {

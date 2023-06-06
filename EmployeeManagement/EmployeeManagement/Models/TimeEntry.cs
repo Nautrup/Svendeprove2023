@@ -27,10 +27,10 @@ namespace EmployeeManagement.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         
-        public int Duration { get; set; }
+        public decimal Duration { get; set; }
         public int? GroupingID { get; set; }
 
-        public TimeEntryMessage TimeEntryMessage { get; set; }
+        public List<TimeEntryMessage> TimeEntryMessage { get; set; }
         public Location Location { get; set; }
 
         public int LocationId { get; set; } // Til tesst
@@ -50,35 +50,29 @@ namespace EmployeeManagement.Models
         /// </summary>
         public void Create()
         {
-            try
+           
+            using (ApiHelper.Client)
             {
-                using (ApiHelper.Client)
+                TimeEntry newEntry = new TimeEntry()
                 {
-                    TimeEntry newEntry = new TimeEntry()
-                    {
-                        //User = User,
-                        UserId = UserId,
-                        Start = Start,
-                        End = End,
-                        CompanyId = CompanyId,
-                        Duration = Duration,
-                        //GroupingID = GroupingID,
-                        //TimeEntryMessage = TimeEntryMessage,
-                        TimeEntryTypeId = TimeEntryTypeId,
-                        //Location = Location,
-                        LocationId = LocationId,
-                    };
+                    //User = User,
+                    UserId = UserId,
+                    Start = Start,
+                    End = End,
+                    Duration = Duration,
+                    //GroupingID = GroupingID,
+                    //TimeEntryMessage = TimeEntryMessage,
+                    TimeEntryTypeId = TimeEntryTypeId,
+                    //Location = Location,
+                    LocationId = LocationId,
+                };
 
-                    var jsonData = JsonConvert.SerializeObject(newEntry);
+                var jsonData = JsonConvert.SerializeObject(newEntry);
 
-                    ApiHelper.Post("/entry", jsonData);
+                ApiHelper.Post("/entry", jsonData);
 
-                }
             }
-            catch (WebException ex)
-            {
-                throw new WebException(ex.Message);
-            }
+           
         }
     }
 }

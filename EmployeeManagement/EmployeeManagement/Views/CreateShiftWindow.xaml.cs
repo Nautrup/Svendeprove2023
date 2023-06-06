@@ -1,4 +1,5 @@
-﻿using EmployeeManagement.ViewModel;
+﻿using EmployeeManagement.Models;
+using EmployeeManagement.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,18 +17,19 @@ using System.Windows.Shapes;
 namespace EmployeeManagement.Views
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for CreateShiftWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class CreateShiftWindow : Window
     {
-        public LoginViewModel ViewModel { get; set; }
-        public LoginWindow()
+        public WorkplanViewModel ViewModel { get; set; }
+        public CreateShiftWindow()
         {
             InitializeComponent();
-            ViewModel  = new LoginViewModel();
-            DataContext = ViewModel;
+            ViewModel = new WorkplanViewModel();
             if (ViewModel.CloseWindowAction == null)
                 ViewModel.CloseWindowAction = new Action(this.Close);
+
+            DataContext = ViewModel;
         }
     }
 }

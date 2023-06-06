@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:EmployeeManagement.Views"
       mc:Ignorable="d" 
       xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
-      xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel"
+      xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" 
+      xmlns:components="clr-namespace:EmployeeManagement.Components"
       d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeViewModel}"
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="EmployeePage">
@@ -65,7 +66,7 @@
             </Grid.Resources>
 
             <TextBlock VerticalAlignment="Center" Foreground="#b0b9c6" IsHitTestVisible="False"
-                       Panel.ZIndex="1" Text="Søg her..." 
+                       Panel.ZIndex="1" Text="Søg her..." Margin="10 0 0 0"
                        Visibility="{Binding ElementName=textBoxSearch, Path=Text.IsEmpty, Converter={StaticResource BoolToVis}}"/>
 
             <TextBox x:Name="textBoxSearch" Style="{StaticResource textBoxSearch}" />
@@ -84,11 +85,23 @@
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Medarbejder" FontSize="32" FontWeight="SemiBold" Grid.Row="1" Grid.Column="1"
-                       HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" />
+                <TextBlock Text="{Binding CurrentLoggedInUser.Company.Name}" FontSize="32" FontWeight="SemiBold" Grid.Row="1" Grid.Column="1"
+                           HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 5 0" />
+                
+           
 
             <Grid Grid.Row="1" Grid.Column="2">
 
+                <Button 
+                                            Style="{StaticResource addNewMemeberButton}"  Width="150"
+                                        Visibility="{Binding ShowCreateShiftButton, Converter={StaticResource BoolToVis}}"
+                                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 0 5"
+                                            Command="{Binding ShowCreateWorkplanCommand }"  Grid.Column="1" >
+                    <StackPanel Orientation="Horizontal">
+                        <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                        <TextBlock Text="Opret vagt" />
+                    </StackPanel>
+                </Button>
             </Grid>
         </Grid>
 
@@ -104,6 +117,7 @@
         <Grid Grid.Column="2" Grid.Row="2" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
+
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Background="White" Margin="5">
@@ -112,7 +126,10 @@
                     <TabItem Header="Information" Width="120" >
 
                         <Grid>
-
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
                             <!--Data-->
                             <StackPanel>
                                 <!--Navn, mellemnavn og efternavn -->
@@ -137,27 +154,6 @@
                                     <TextBox Grid.Column="5" Text="{Binding SelectedUser.SurName}"  Height="25" />
 
                                 </Grid>
-
-                                <!--Email--><!--
-                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Email:" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedUser.Email}" Grid.Column="1" Height="25" />
-                                </Grid>-->
-
-                                <!--Alder-->
-                                <!--<Grid VerticalAlignment="Top">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Alder:" VerticalAlignment="Center" />
-                                    <TextBox Text="{Binding SelectedUser.Age}" Grid.Column="1" Height="25" />
-                                </Grid>-->
-
 
                                 <!--Ansættelses dato-->
                                 <Grid VerticalAlignment="Top" Margin="0 5 0 5">
@@ -195,7 +191,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
                                     <ComboBox ItemsSource="{Binding SelectedUser.Locations}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              SelectedItem="{Binding SelectedUser.Locations[0]}"
+                                              SelectedValue="{Binding SelectedUser.Locations[0]}"
                                               Height="25" >
 
                                     </ComboBox>
@@ -208,33 +204,12 @@
                                     </Button>
                                     
                                     <!--Leder-->
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal">
-                                        <TextBlock Text="Leder: " />
-                                        <TextBlock Text="BOSS :D" />
+                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="25 0 0 0">
+                                        
+                                        
                                     </StackPanel>
                                 </Grid>
 
-                                <!--Firma-->
-                                <Grid VerticalAlignment="Top" Margin="0 5 0 5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100" />
-                                        <ColumnDefinition Width="150"/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Firma:" VerticalAlignment="Center" />
-                                    <ListView ItemsSource="{Binding SelectedUser.Company}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              SelectedItem="{Binding SelecedCompany, UpdateSourceTrigger=PropertyChanged}"
-                                               >
-                                     
-                                    </ListView>
-                                    
-                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
-                                            Width="50" Height="25">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" />
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
 
                                 <!--Rules-->
                                 <Grid VerticalAlignment="Top" Margin="0 5 0 5">
@@ -244,11 +219,8 @@
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Roller:" VerticalAlignment="Center" />
-                                    <ComboBox ItemsSource="{Binding SelectedUser.UserRole}"   Grid.Column="1"
-                                              SelectedItem="{Binding SelectedUser.UserRole}"
-                                               >
-
-                                    </ComboBox>
+                                    <TextBlock Text="{Binding SelectedUser.UserRole.Name}" Grid.Column="1" />
+                                   
 
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
                                             Width="50" Height="25">
@@ -270,7 +242,8 @@
                                             </Grid.RowDefinitions>
                                             <TextBlock Text="Billede" />
                                             <Border BorderThickness="1" Width="150" Height="150" HorizontalAlignment="Left" Grid.Row="1" Background="OrangeRed">
-                                                <Image Width="150" Height="150" Source="/Resources/defaultuser.png" >
+                                                <Image Width="150" Height="150" 
+                                                        >
 
                                             </Image>
                                             </Border>
@@ -311,338 +284,30 @@
 
                                     <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CancelCommand}" Margin="5 0 5 0">
                                         <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="CloseCircle" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
-                                            <TextBlock Text="Fortryd" />
+                                            <Icon:PackIconMaterial Kind="DeleteEmpty" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                            <TextBlock Text="Slet" />
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>
 
                             </Grid>
 
-
+                          
                         </Grid>
                     </TabItem>
 
                     <!--Vagtplan-->
                     <TabItem Header="Vagtplan" Width="120" >
-                        <!--<local:EmployeeWorkplanControl DataContext="" />-->
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50" />
-                                
-                                <RowDefinition Height="*"  />
-                            </Grid.RowDefinitions>
-
-                            <!--Dato Actions-->
-                            <Grid Grid.Row="0" Grid.ColumnSpan="7" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-
-                                <Grid Grid.Column="0">
-                                    <StackPanel Orientation="Horizontal" Background="Transparent">
-                                        <CalendarButton Content="Day"  Background="Transparent" Width="50" Height="35" BorderThickness="0 0 0 0.5"/>
-                                        <CalendarButton Content="Week" Background="Transparent" Width="50" Height="35" BorderThickness="0 0 0 0.5" />
-                                        <CalendarButton Content="Month"  Background="Transparent" Width="50" Height="35" BorderThickness="0 0 0 0.5"/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Column="1" HorizontalAlignment="Right">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="auto" />
-                                        <ColumnDefinition Width="auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <Button 
-                                            Style="{StaticResource addNewMemeberButton}" Width="250"
-                                            VerticalAlignment="Center" Margin="0 0 0 5"
-                                            Command="{Binding FindLastWeekWorkplanCommand}"  Grid.Column="0" >
-                                        <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="ArrowLeft" VerticalAlignment="Center" Width="25" Height="25" Margin="0 1 8 0" />
-                                            
-                                        </StackPanel>
-                                    </Button>
-                                    <Button
-                                            Style="{StaticResource addNewMemeberButton}" Width="250"
-                                            VerticalAlignment="Center" Margin="0 0 0 5"
-                                            Command="{Binding FindNextWeekWorkplanCommand}"  Grid.Column="1">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="ArrowRight" VerticalAlignment="Center" Width="25" Height="25" Margin="0 1 8 0" />
-                                            
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-                            </Grid>
-
-                            <!--Mandag-->
-                            <Grid Grid.Row="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding MondayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding MondayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Tirsdag-->
-                            <Grid Grid.Row="1" Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding TuesdayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding TuesdayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding TuesdayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid>
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="auto" />
-                                                        <RowDefinition Height="auto" />
-                                                    </Grid.RowDefinitions>
-                                                    <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                                        <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                        <TextBlock Text=" - " Width="30" />
-                                                        <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                        <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                        <TextBlock Text="T" />
-                                                    
-                                                    </StackPanel>
-
-                                                    <TextBlock Grid.Row="1" Text="{Binding TimeEntryMessage.Message}" />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Onsdag-->
-                            <Grid Grid.Row="1" Grid.Column="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding WednsdayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding WednsdayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding WensdayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Thursday-->
-                            <Grid Grid.Row="1" Grid.Column="3">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding ThursdayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding ThursdayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Fredag-->
-                            <Grid Grid.Row="1" Grid.Column="4">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding FridayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding FridayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding FridayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Lørdag-->
-                            <Grid Grid.Row="1" Grid.Column="5">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding SaturdayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding SaturdayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-
-                            <!--Søndag-->
-                            <Grid Grid.Row="1" Grid.Column="6">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="*"  />
-                                </Grid.RowDefinitions>
-
-                                <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding SundayDate.Date.DayOfWeek}" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                                        <TextBlock Text="{Binding SundayDate.Date, StringFormat='dd/MM/y'}"
-                                                   VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                        FontSize="14" FontWeight="SemiBold" />
-                                    </StackPanel>
-                                </Grid>
-
-                                <Grid Grid.Row="1">
-                                    <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" >
-
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text=" - " Width="30" />
-                                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                                    <TextBlock Text="{Binding Duration}" Width="auto" />
-                                                    <TextBlock Text="T" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-
-                                    </ListView>
-                                </Grid>
-                            </Grid>
-                            
-                        </Grid>
+                        
+                        <components:EmployeeWorkplanView  DataContext="{Binding }"/>
+                        
+                        
                     </TabItem>
 
                 </TabControl>
             </Grid>
 
+            
 
 
         </Grid>

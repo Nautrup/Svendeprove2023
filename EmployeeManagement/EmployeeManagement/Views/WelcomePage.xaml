@@ -9,7 +9,8 @@
       Title="WelcomePage">
 
     <Grid>
-        <TextBlock Text="Velkommen til dit super mega seje program"
+        <TextBlock Text="Velkommen, vælg menu til venstre for at komme i gang." 
+                   TextWrapping="WrapWithOverflow"
                    VerticalAlignment="Center" HorizontalAlignment="Center"
                    FontSize="24" FontWeight="SemiBold" />
     </Grid>

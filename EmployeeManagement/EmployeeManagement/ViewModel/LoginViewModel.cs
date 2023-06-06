@@ -27,6 +27,7 @@ namespace EmployeeManagement.ViewModel
 
             AuthenticateCommand = new RelayCommand(o => AuthenticateUser());
             CloseWindowCommand = new RelayCommand(o => Application.Current.Shutdown());
+
         }
 
         #region ICommands
@@ -35,6 +36,9 @@ namespace EmployeeManagement.ViewModel
         #endregion
 
         #region Properties
+
+        public Action CloseWindowAction { get; set; }
+
         public string Password {
             get { return _password; }
             set
@@ -71,18 +75,23 @@ namespace EmployeeManagement.ViewModel
                 string? json = JsonConvert.SerializeObject(login);
                 string stream = ApiHelper.Post("/auth/authenticate", json);
 
+                // Henter voress api data
                 ApiAuthenticationData apiData = JsonConvert.DeserializeObject<ApiAuthenticationData>(stream);
+
+                // Sætter vores Token til at være vores login på medarbejderen
+                ApiHelper.SetToken(apiData.accessToken.token);
 
                 // Henter den authenticated brugers information
                 string response = ApiHelper.Get(endpoint: "/user/current");
-                
-                
+
                 // Laver det til C# object
                 User user = JsonConvert.DeserializeObject<User>(response);
                 
                 // Viser mainform
                 MainWindow window = new MainWindow(user);
                 window.Show();
+
+                CloseWindowAction();
             }
             catch (WebException ex)
             {
@@ -94,8 +103,8 @@ namespace EmployeeManagement.ViewModel
         #endregion
 
         #region  Private Variables
-        private string _password = "hpp";
-        private string _userName = "hpp";
+        private string _password = "jrj";
+        private string _userName = "jrj";
         #endregion
     }
 }

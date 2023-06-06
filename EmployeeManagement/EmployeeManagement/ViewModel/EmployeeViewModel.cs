@@ -21,20 +21,30 @@ namespace EmployeeManagement.ViewModel
     public class EmployeeViewModel : ViewModelBase
     {
         ExceptionHttpHelper exceptionHttpHelper;
-
         public EmployeeViewModel()
         {
+            // ICommands
             UpdateUserInformationCommand = new RelayCommand(o => UpdateUserInformation(), o => SelectedUser != null);
             CreateNewUserCommand = new RelayCommand(o => { } , o => SelectedUser != null);
             ShowCreateWindowCommand = new RelayCommand(o => ShowCreateWindow()) ;
-
             FindNextWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(7), o => SelectedUser != null);
             FindLastWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(-7), o => SelectedUser != null);
+            ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => true);
 
+            
+            // Metoder der skal kørers når viewmodel initialisiere
             GetUsers(); // Henter alle brugere som har noget med den person at gøre
-           
-            CurrentWeekStartDate = GetStartOfWeek(DateTime.Now);
+
+            CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
+
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
+            {
+                ShowCreateShiftButton = false;
+            }
         }
+
+
+        public bool ShowCreateShiftButton { get; set; } = true;
 
         #region Icommands
         public ICommand UpdateUserInformationCommand { get; set; }
@@ -43,6 +53,7 @@ namespace EmployeeManagement.ViewModel
         public ICommand FindNextWeekWorkplanCommand { get; set; }
         public ICommand FindLastWeekWorkplanCommand { get; set; }
         public ICommand CancelCommand { get; set; }
+        public ICommand ShowCreateWorkplanCommand { get; set; }
         #endregion
 
         public DateTime CurrentWeekStartDate {
@@ -58,7 +69,6 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-
         // Valgte bruger
         public User SelectedUser
 		{
@@ -66,26 +76,18 @@ namespace EmployeeManagement.ViewModel
 			set 
 			{ 
 				_selectedUser = value;
+
                 if (SelectedUser != null)
                 {
-                    GetUserTimeEntriess(SelectedUser.ID); // Henter stemplinger
-                    SelectedUser.Locations = GetUserLocations(SelectedUser.ID); // Henter lokationer
+                    GetUserTimeEntriess(SelectedUser.ID);                       // Henter stemplinger
+                    //SelectedUser.Locations = GetUserLocations(SelectedUser.ID); // Henter lokationer
+                    //SelectedUser.UserRole = GetUserRole(SelectedUser.ID);       // Henter Rolle
                     SelectedUser.FirstDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.HiredDate);
                 }
               
                 OnPropertyChanged(nameof(SelectedUser));
 			}
 		}
-
-        // Valgte firma
-        public Company SelecedCompany {
-            get { return _selectedCompany; }
-            set 
-            { 
-                _selectedCompany = value;
-                OnPropertyChanged(nameof(SelecedCompany));
-            }
-        }
 
         #region ObservableCollectiions
         public ObservableCollection<User> UserCollection { get; set; } = new();
@@ -106,53 +108,44 @@ namespace EmployeeManagement.ViewModel
         public ObservableCollection<TimeEntry> SaturdayTimeEntriesCollection { get; set; } = new();
         public ObservableCollection<TimeEntry> SundayTimeEntriesCollection { get; set; } = new();
 
-
         #endregion
 
+        #region Date Properties
         public DateTime MondayDate {
             get { return _mondayDate; }
             set { _mondayDate = value; OnPropertyChanged(nameof(MondayDate)); }
         }
-
 
         public DateTime TuesdayDate {
             get { return _tuesdayDate; }
             set { _tuesdayDate = value; OnPropertyChanged(nameof(TuesdayDate)); }
         }
 
-
         public DateTime WednsdayDate {
             get { return _wednsdayDate; }
             set { _wednsdayDate = value; OnPropertyChanged(nameof(WednsdayDate)); }
         }
-
 
         public DateTime ThursdayDate {
             get { return _thursdayDate; }
             set { _thursdayDate = value; OnPropertyChanged(nameof(ThursdayDate)); }
         }
 
-
         public DateTime FridayDate {
             get { return _fridayDate; }
             set { _fridayDate = value;OnPropertyChanged(nameof(FridayDate)); }
         }
-
- 
 
         public DateTime SaturdayDate {
             get { return _saturdayDate; }
             set { _saturdayDate = value; OnPropertyChanged(nameof(SaturdayDate)); }
         }
 
-
         public DateTime SundayDate {
             get { return _sundayDate; }
             set { _sundayDate = value; OnPropertyChanged(nameof(SundayDate)); }
         }
-
-
-
+        #endregion
 
         #region Methods
 
@@ -196,9 +189,9 @@ namespace EmployeeManagement.ViewModel
                 {
                     string json = ApiHelper.Get($"/user/{userID}/roles");
 
-                    UserRole role =  JsonConvert.DeserializeObject(json) as UserRole;
+                    List<UserRole> roles = JsonConvert.DeserializeObject<List<UserRole>>(json);
 
-                    return role;
+                    return roles[0];
                 }
             }
             catch (WebException ex)
@@ -221,14 +214,6 @@ namespace EmployeeManagement.ViewModel
 
                     List<Location> locations = JsonConvert.DeserializeObject<List<Location>>(json);
 
-                    foreach (var location in locations)
-                    {
-                        
-                         //location.LocationManager = GetLocationLeaders(locationId: location.ID)[0];
-                        
-                    }
-                  
-
                     return locations;
                 }
             }
@@ -241,7 +226,7 @@ namespace EmployeeManagement.ViewModel
                 return null;
             }
         }
-
+        // Henter lokation leder
         private List<User> GetLocationLeaders(int locationId)
         {
             try
@@ -262,31 +247,6 @@ namespace EmployeeManagement.ViewModel
 
                 MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
                 return null;
-            }
-        }
-
-        // Heenter en specifik bruger info
-        private void GetSpecifikUserInformation(int userId)
-        {
-            try
-            {
-                using (ApiHelper.Client)
-                {
-                    string json = ApiHelper.Client.DownloadString($"/user/{userId}");
-
-                    var list = JsonConvert.DeserializeObject<List<User>>(json);
-
-                    foreach (var item in list)
-                    {
-                        UserCollection.Add(item);
-                    }
-                }
-            }
-            catch (WebException ex)
-            {
-                exceptionHttpHelper = new ExceptionHttpHelper(ex);
-
-                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
             }
         }
 
@@ -334,40 +294,56 @@ namespace EmployeeManagement.ViewModel
                     foreach (TimeEntry entry in list)
                     {
                         //entry.TimeEntryMessage = GetUserTimeEntryMessages(entry.ID);
-                   
-                        entry.StartDate = entry.StartDate.AddSeconds(entry.Start);
-                        entry.EndDate = entry.EndDate.AddSeconds(entry.End);
 
+                        entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start); // entry.StartDate.AddSeconds(entry.Start);
+                        entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
+                        entry.TimeEntryMessage = GetTimeEntryMessages(entry.ID);
                         DayOfWeek day = entry.StartDate.DayOfWeek;
-              
+
                         switch (day)
                         {
                             case DayOfWeek.Monday:
-                                
-                                MondayTimeEntriesCollection.Add(entry);
+                                if (entry.StartDate.Date == MondayDate.Date)
+                                {
+                                    MondayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Tuesday:
-                              
-                                TuesdayTimeEntriesCollection.Add(entry);
+
+                                if (entry.StartDate == TuesdayDate.Date)
+                                {
+                                    TuesdayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Wednesday:
-                                
-                                WensdayTimeEntriesCollection.Add(entry);
+                                if(entry.StartDate.Date == WednsdayDate.Date)
+                                {
+                                    WensdayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Thursday:
-                                
-                                ThursdayTimeEntriesCollection.Add(entry);
+                                if (entry.StartDate.Date == ThursdayDate.Date)
+                                {
+                                    ThursdayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Friday:
-                                
-                                FridayTimeEntriesCollection.Add(entry);
+                                if (entry.StartDate.Date == FridayDate.Date)
+                                {
+                                    FridayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Saturday:
-                                
-                                SaturdayTimeEntriesCollection.Add(entry);
+                                if (entry.StartDate.Date == SaturdayDate.Date)
+                                {
+                                    SaturdayTimeEntriesCollection.Add(entry);
+                                }
                                 break;
                             case DayOfWeek.Sunday:
-                                
+                                if (entry.StartDate.Date == SundayDate.Date)
+                                {
+
+                                }
                                 SundayTimeEntriesCollection.Add(entry);
                                 break;
                             default:
@@ -386,7 +362,7 @@ namespace EmployeeManagement.ViewModel
         }
 
         // Henter en TimeEntrys messsage
-        private TimeEntryMessage GetTimeEntryMessages(int entryId)
+        private List<TimeEntryMessage> GetTimeEntryMessages(int entryId)
         {
             try
             {
@@ -394,7 +370,7 @@ namespace EmployeeManagement.ViewModel
                 {
                     string json = ApiHelper.Get($"/entry/{entryId}/messages");
 
-                    return JsonConvert.DeserializeObject<TimeEntryMessage>(json);
+                    return JsonConvert.DeserializeObject<List<TimeEntryMessage>>(json);
                 }
             }
             catch (WebException ex)
@@ -406,30 +382,19 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-        private void GetRoles(int? userId = null)
+      
+
+        #endregion
+
+        #region API Put 
+        // Opdatere en brugers information
+        private void UpdateUserInformation()
         {
             try
             {
-                using (ApiHelper.Client)
-                {
-                    string json = string.Empty;
+                UserCreate updateUser = new UserCreate();
 
-                    if (userId == null)
-                    {
-                        json = ApiHelper.Get($"/role");
-                    }
-                    else
-                    {
-                        json = ApiHelper.Get($"/user/{userId}/roles");
-                    }
-
-                    var list = JsonConvert.DeserializeObject<List<UserRole>>(json);
-                    // Looper gennem hver bruger, tilføjer lokationer derefter i collection af brugere
-                    foreach (var user in list)
-                    {
-                        UserRoleCollection.Add(user);
-                    }
-                }
+                updateUser.Update(SelectedUser);
             }
             catch (WebException ex)
             {
@@ -441,15 +406,6 @@ namespace EmployeeManagement.ViewModel
 
         #endregion
 
-        #region API Post 
-
-        private void UpdateUserInformation()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
         // Henter starten  på ugen
         private DateTime GetStartOfWeek(DateTime date)
         {
@@ -457,8 +413,6 @@ namespace EmployeeManagement.ViewModel
             return date.AddDays(-1 * diff).Date;
         }
 
-
-      
         #endregion
 
         // Viser vores vindue til at oprette medarbejdere
@@ -471,12 +425,31 @@ namespace EmployeeManagement.ViewModel
             GetUsers();
         }
 
+        // Viser vindue til at oprette ny vagt
+        private void ShowCreateWorkplanWindow()
+        {
+            try
+            {
+                User temp = SelectedUser;
+
+                CreateShiftWindow createShift = new CreateShiftWindow();
+            
+                createShift.ShowDialog();
+
+                GetUserTimeEntriess(temp.ID);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
         #region Private Variables
+        
         private DateTime _currentWeekStartDate;
         private User _selectedUser;
         private Company _selectedCompany;
-
-
         private DateTime _saturdayDate;
         private DateTime _sundayDate;
         private DateTime _fridayDate;

@@ -17,58 +17,87 @@ namespace EmployeeManagement.ViewModel
     public class WorkplanViewModel : ViewModelBase
     {
         ExceptionHttpHelper exceptionHttpHelper;
-
+        public EmployeeViewModel EmployeeViewModel { get; set; }
         public WorkplanViewModel() 
         {
+            EmployeeViewModel = new EmployeeViewModel();
+            EmployeeViewModel.SelectedUser = CurrentLoggedInUser;
             CreateTimeEntryCommand = new RelayCommand(o => CreateEntry(), o => SelectedUser != null );
 
-            GetUsers(CurrentLoggedInUser.ID);
+            if (CurrentLoggedInUser.Locations.Count != 0)
+            {
+                GetUsers(CurrentLoggedInUser.ID);
+            }
+
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
+            {
+                ShowCreateShiftButton = false;
+            }
         }
+
+        public bool ShowCreateShiftButton { get; set; } = false;
 
         public ICommand CreateTimeEntryCommand { get; set; }
 
         public ObservableCollection<User> UserCollection { get; set; } = new();
         public ObservableCollection<TimeEntryType> TimeEntryTypeCollection { get; set; } = new();
-
+        public ObservableCollection<TimeEntry> TimeEntryCollections { get; set; } = new();
         public User SelectedUser {
             get { return _selectedUser; }
             set { _selectedUser = value; OnPropertyChanged(nameof(SelectedUser));
             }
         }
 
-
         public DateTime Start {
             get { return _start; }
             set { _start = value; OnPropertyChanged(nameof(Start)); }
         }
 
-        
         public DateTime End {
             get { return _end; }
             set { _end = value; OnPropertyChanged(nameof(End)); }
         }
 
+        public Action CloseWindowAction { get; set; }
 
         public TimeEntryType SelectedTimeEntryType {
             get { return _selectedTimeEntryType; }
             set { _selectedTimeEntryType = value; OnPropertyChanged(nameof(SelectedTimeEntryType)); }
         }
 
+        // Henter nuværende logged inds brugers vagter
+        private void GetUser(int userId)
+        {
+            try
+            {
+                TimeEntryCollections.Clear();
 
-        // Henter alle brugere
+                foreach (var item in Services.UserService.GetSpecifikUserInformation(userId))
+                {
+                    TimeEntryCollections.Add(item);
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            }
+        }
+
+        // Henter alle brugere depending fra lokation
         private void GetUsers(int userId)
         {
             try
             {
                 using (ApiHelper.Client)
                 {
-                    string json = ApiHelper.Client.DownloadString($"/user"); // Rigtige /user/{userId}/locations
+                    string json = ApiHelper.Client.DownloadString($"location/{CurrentLoggedInUser.Locations[0].ID}/users"); // Rigtige location/1/users
 
                     var list = JsonConvert.DeserializeObject<List<User>>(json);
                     // Looper gennem hver bruger, tilføjer lokationer derefter i collection af brugere
                     foreach (var user in list)
                     {
-                        //user.Location = GetUserLocations(user.ID);
+                        user.Locations = GetUserLocations(user.ID);
                         //user.Company = GetUserCompany(user.ID);
                         //user.UserRole = GetUserRole(user.ID);
                         UserCollection.Add(user);
@@ -82,21 +111,50 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Henter brugerss lokationer
+        private List<Location> GetUserLocations(int userId)
+        {
+            try
+            {
+                using (ApiHelper.Client)
+                {
+                    string json = ApiHelper.Client.DownloadString($"/user/{userId}/locations");
+
+                    List<Location> locations = JsonConvert.DeserializeObject<List<Location>>(json);
+
+                    foreach (var location in locations)
+                    {
+
+                        //location.LocationManager = GetLocationLeaders(locationId: location.ID)[0];
+
+                    }
+
+
+                    return locations;
+                }
+            }
+            catch (WebException ex)
+            {
+
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+                return null;
+            }
+        }
+
         private void CreateEntry()
         {
             try
             {
                 TimeEntry newEntry = new TimeEntry()
                 {
-                    //User = SelectedUser,
-                    CompanyId = SelectedUser.Company.ID,
                     UserId = SelectedUser.ID,
-                    //Start = Start,
-                    //End = End,
-                    Duration = Start.TimeOfDay.Hours - End.TimeOfDay.Hours,
-                    //TimeEntryType = SelectedTimeEntryType
+                    Start = UnixConversion.ToUnixTimeMilliSeconds(Start),
+                    End = UnixConversion.ToUnixTimeMilliSeconds(End),
+                    Duration = End.TimeOfDay.Hours - Start.TimeOfDay.Hours,
                     TimeEntryTypeId = SelectedTimeEntryType.ID,
-                    LocationId = 1,
+                    LocationId = SelectedUser.Locations[0].ID,
                 };
 
                 newEntry.Create();
@@ -109,15 +167,10 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-        private void GetTimeEntryTypes()
-        {
-
-        }
-
         #region Private Variables
-        private DateTime _end;
+        private DateTime _end = DateTime.UtcNow;
         private User _selectedUser;
-        private DateTime _start;
+        private DateTime _start = DateTime.UtcNow;
         private TimeEntryType _selectedTimeEntryType;
         #endregion
     }

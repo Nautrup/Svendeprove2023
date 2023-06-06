@@ -39,33 +39,29 @@ namespace EmployeeManagement.Models
         {
             // Api til update
 
-            try
+            using (ApiHelper.Client)
             {
-                using (ApiHelper.Client)
+                User newUser = new User()
                 {
-                    User newUser = new User()
-                    {
-                        UserRole = UserRole,
-                        FirstName = FirstName,
-                        MiddleName = MiddleName,
-                        SurName = SurName,
-                        Company = Company,
-                        ProfileImage = ProfileImage,
-                        HiredDate = HiredDate,
-                        FiredDate = FiredDate,
-                        Locations = Locations,
-                    };
+                    UserRole = UserRole,
+                    FirstName = FirstName,
+                    MiddleName = MiddleName,
+                    SurName = SurName,
+                    Company = Company,
+                    ProfileImage = ProfileImage,
+                    HiredDate = HiredDate,
+                    FiredDate = FiredDate,
+                    Locations = Locations
+                };
 
-                    var jsonData = JsonConvert.SerializeObject(newUser);
+              
 
-                    ApiHelper.Post("/user", jsonData);
+                var jsonData = JsonConvert.SerializeObject(newUser);
 
-                }
+                ApiHelper.Put($"/user{ID}", jsonData);
+
             }
-            catch (WebException ex)
-            {
-                throw new WebException(ex.Message);
-            }
+            
         }
 
         /// <summary>

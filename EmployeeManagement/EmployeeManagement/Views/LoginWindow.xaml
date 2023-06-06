@@ -65,7 +65,7 @@
                 <TextBlock Text="Medarbejder system" HorizontalAlignment="Center" Margin="0 10 0 0"
                            FontSize="20" FontWeight="SemiBold" FontFamily="Montserrat"
                            Foreground="White"/>
-                <TextBlock Text="Sigurd" HorizontalAlignment="Center" Margin="0 10 0 0"
+                <TextBlock Text="Outlinr" HorizontalAlignment="Center" Margin="0 10 0 0"
                            FontSize="20" FontWeight="SemiBold" FontFamily="Montserrat"
                            Foreground="White"/>
                 <TextBlock Text="Brugernavn"
@@ -118,7 +118,6 @@
 
                 </StackPanel>
             </StackPanel>
-
 
         </Grid>
     </Border>

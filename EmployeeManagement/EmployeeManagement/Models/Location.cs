@@ -12,5 +12,10 @@ namespace EmployeeManagement.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public User LocationManager { get; set; }
+
+        public void Create()
+        {
+
+        }
     }
 }

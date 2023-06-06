@@ -144,5 +144,27 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <!--Workplan item template-->
+        <Style x:Key="WorkplanTemplate"  TargetType="ListViewItem">
+            <Setter Property="Height" Value="80" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Background" Value="LightGray" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="1 1 1 5" BorderBrush="Black" Margin="2" 
+                                Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
+                            <!-- ContentPresenter and other visual elements -->
+                            <ContentPresenter  Margin="5" 
+                                               VerticalAlignment="Center"
+                                               />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+     
     </Application.Resources>
 </Application>

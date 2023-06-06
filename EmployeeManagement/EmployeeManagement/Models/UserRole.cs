@@ -9,9 +9,8 @@ namespace EmployeeManagement.Models
     public class UserRole
     {
         public int Id { get; set; }
-        public int CompanyId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<UserRolePermission> Permissions { get; set; }
+        public List<int> PermissionIds { get; set; }
     }
 }

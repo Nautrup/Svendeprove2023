@@ -20,6 +20,7 @@ namespace EmployeeManagement.ViewModel
             OpenEmployeeWorkplanPageCommand = new RelayCommand(o => { OpenEmployeeWorkplanPage(); });
             OpenEmployeeTimeStampCommand = new RelayCommand(o => OpenEmployeeTimeStamp());
 
+            ShowMenuDependingOnPermissions();
         }
 
        
@@ -40,9 +41,30 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        public bool ShowWorkPlan { get; set; } = false;
+        public bool ShowEmployeePage { get; set; } = false;
+        public bool ShowTimeStampPage { get; set; } = false;
         #region methods
 
-       
+        private void ShowMenuDependingOnPermissions()
+        {
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(1))
+            {
+                ShowWorkPlan = true;
+                ShowEmployeePage = true;
+                ShowTimeStampPage = true;
+                return;
+            }
+            // 2 see own entries
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
+            {
+                ShowWorkPlan = true;
+                ShowEmployeePage = false;
+                ShowTimeStampPage = true;
+                return;
+            }
+
+        }
 
         private void OpenEmployeeWorkplanPage()
         {
@@ -57,6 +79,11 @@ namespace EmployeeManagement.ViewModel
         private void OpenEmployeeTimeStamp()
         {
             FramePage = "Views/EmployeeTimeEntryPage.xaml";
+        }
+
+        private void OpenEmployeeEntryReportPage()
+        {
+            FramePage = "";
         }
         #endregion
 

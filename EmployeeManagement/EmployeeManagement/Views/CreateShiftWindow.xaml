@@ -1,0 +1,48 @@
+﻿<Window x:Class="EmployeeManagement.Views.CreateShiftWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EmployeeManagement.Views" 
+        xmlns:components="clr-namespace:EmployeeManagement.Components" 
+        xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" 
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        xmlns:Models="clr-namespace:EmployeeManagement.Models" 
+        xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:WorkplanViewModel}"
+        mc:Ignorable="d"
+        Title="CreateShiftWindow" Height="450" Width="800">
+
+    <Grid Margin="5 0 5 0">
+
+        <StackPanel Width="350">
+            <TextBlock Text="Vælg medarbejder:" />
+            <ComboBox ItemsSource="{Binding UserCollection}" DisplayMemberPath="FullName"
+                      SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock Text="Vælg start tidspunkt:" />
+            <xctk:DateTimePicker Value="{Binding Start}" Format="Custom" FormatString="dd-MM-yyyy HH:mm:ss" />
+
+            <TextBlock Text="Vælg slut tidspunkt:" />
+            <xctk:DateTimePicker  Value="{Binding End}" Format="Custom" FormatString="dd-MM-yyyy HH:mm:ss" />
+
+            <TextBlock Text="Vælg start tidstype:" />
+            <ComboBox
+                      SelectedItem="{Binding SelectedTimeEntryType}"
+                DisplayMemberPath="Name"
+                      >
+                <Models:TimeEntryType ID="1" Name="Normalvagt"/>
+                <Models:TimeEntryType ID="2" Name="Aftenvagt"/>
+
+            </ComboBox>
+
+            <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CreateTimeEntryCommand}" >
+                <StackPanel Orientation="Horizontal">
+                    <Icon:PackIconMaterial Kind="ClockCheck" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                    <TextBlock Text="Opret vagt" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+    </Grid>
+</Window>

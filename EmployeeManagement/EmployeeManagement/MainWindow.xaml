@@ -7,6 +7,10 @@
         mc:Ignorable="d"
         xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
         Title="MainWindow" Height="1080" Width="1920">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    
     <Border Background="#eff2f7" CornerRadius="30">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -37,21 +41,24 @@
                         <!--Menu buttons-->
                         <StackPanel DockPanel.Dock="Top">
 
-                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeeWorkplanPageCommand}" >
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeeWorkplanPageCommand}"
+                                    Visibility="{Binding ShowWorkPlan, Converter={StaticResource BoolToVis}}">
                                 <StackPanel Orientation="Horizontal">
                                     <Icon:PackIconMaterial Kind="ViewDashboardVariant" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Vagtplan" />
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeePageCommand}">
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeePageCommand}"
+                                    Visibility="{Binding ShowEmployeePage, Converter={StaticResource BoolToVis}}">
                                 <StackPanel Orientation="Horizontal">
                                     <Icon:PackIconMaterial Kind="FaceMan" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Medarbejder"/>
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeeTimeStampCommand}">
+                            <Button Style="{StaticResource MenuButtons}" Command="{Binding OpenEmployeeTimeStampCommand}"
+                                    Visibility="{Binding ShowTimeStampPage, Converter={StaticResource BoolToVis}}">
                                 <StackPanel Orientation="Horizontal">
                                     <Icon:PackIconMaterial Kind="ClockIn" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Stempel ur" />
