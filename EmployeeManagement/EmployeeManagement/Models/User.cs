@@ -30,7 +30,7 @@ namespace EmployeeManagement.Models
 
         // brug til vise dato i UI
         public DateTime FirstDateOfEmployment { get; set; }
-        public DateTime LastDateOfEmployment { get; set; }
+        public DateTime? LastDateOfEmployment { get; set; }
 
         public List<Location> Locations { get; set; }
 
@@ -101,7 +101,18 @@ namespace EmployeeManagement.Models
        
         public void Delete()
         {
-            // Api til slet
+            try
+            {
+                using (ApiHelper.Client)
+                {
+                    ApiHelper.Delete($"/user/{ID}");
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw new WebException(ex.Message);
+            }
         }
 
         #region Data Error

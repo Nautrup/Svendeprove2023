@@ -31,6 +31,7 @@ namespace EmployeeManagement.ViewModel
             FindLastWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(-7), o => SelectedUser != null);
             ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => true);
 
+            DeleteUserCommand = new RelayCommand(o => DeleteUser(), o => SelectedUser != null);
             
             // Metoder der skal kørers når viewmodel initialisiere
             GetUsers(); // Henter alle brugere som har noget med den person at gøre
@@ -43,7 +44,6 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-
         public bool ShowCreateShiftButton { get; set; } = true;
 
         #region Icommands
@@ -52,7 +52,7 @@ namespace EmployeeManagement.ViewModel
         public ICommand ShowCreateWindowCommand { get; set; }
         public ICommand FindNextWeekWorkplanCommand { get; set; }
         public ICommand FindLastWeekWorkplanCommand { get; set; }
-        public ICommand CancelCommand { get; set; }
+        public ICommand DeleteUserCommand { get; set; }
         public ICommand ShowCreateWorkplanCommand { get; set; }
         #endregion
 
@@ -63,7 +63,7 @@ namespace EmployeeManagement.ViewModel
                 _currentWeekStartDate = value;
                 if (SelectedUser != null)
                 {
-                    GetUserTimeEntriess(SelectedUser.ID);
+                    GetUserTimeEntries(SelectedUser.ID);
                 }
                 OnPropertyChanged(nameof(CurrentWeekStartDate));
             }
@@ -79,10 +79,13 @@ namespace EmployeeManagement.ViewModel
 
                 if (SelectedUser != null)
                 {
-                    GetUserTimeEntriess(SelectedUser.ID);                       // Henter stemplinger
-                    //SelectedUser.Locations = GetUserLocations(SelectedUser.ID); // Henter lokationer
-                    //SelectedUser.UserRole = GetUserRole(SelectedUser.ID);       // Henter Rolle
+                    GetUserTimeEntries(SelectedUser.ID);                       // Henter stemplinger
+                 
                     SelectedUser.FirstDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.HiredDate);
+                    
+                    if (SelectedUser.FiredDate != null)
+                        SelectedUser.LastDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.FiredDate);
+                    
                 }
               
                 OnPropertyChanged(nameof(SelectedUser));
@@ -214,6 +217,13 @@ namespace EmployeeManagement.ViewModel
 
                     List<Location> locations = JsonConvert.DeserializeObject<List<Location>>(json);
 
+                    foreach (var location in locations)
+                    {
+                        location.LocationManager = GetLocationLeaders(location.ID)[0];
+                    }
+
+                    
+
                     return locations;
                 }
             }
@@ -251,7 +261,7 @@ namespace EmployeeManagement.ViewModel
         }
 
         // Henter bruger stemplinger
-        private void GetUserTimeEntriess(int userId)
+        private void GetUserTimeEntries(int userId)
         {
             try
             {
@@ -382,8 +392,6 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-      
-
         #endregion
 
         #region API Put 
@@ -403,6 +411,32 @@ namespace EmployeeManagement.ViewModel
                 MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
             }
         }
+
+        // Sletter en bruger
+        private void DeleteUser()
+        {
+            try
+            {
+                MessageBoxResult result = MessageBox.Show($"Er du sikker på du vil slette:\n{SelectedUser.FullName}\n\nBemærk: Disse ændringer vil slette alt data på denne medarbejder.\nØnsker du stadig at slette tryk 'Ja'", "Bekræft sletning", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    SelectedUser.Delete();
+                    UserCollection.Remove(SelectedUser); 
+                }
+
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            } catch(Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
 
         #endregion
 
@@ -436,7 +470,7 @@ namespace EmployeeManagement.ViewModel
             
                 createShift.ShowDialog();
 
-                GetUserTimeEntriess(temp.ID);
+                GetUserTimeEntries(temp.ID);
             }
             catch (Exception ex)
             {

@@ -13,6 +13,7 @@ namespace EmployeeManagement.ViewModel
         public static User CurrentLoggedInUser { get; set; }
        
         public event PropertyChangedEventHandler? PropertyChanged;
+
         public void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)

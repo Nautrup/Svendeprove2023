@@ -28,17 +28,17 @@ namespace EmployeeManagement.Services
 
             Client.BaseAddress = EndPoint;
 
-            //Client.Headers.Add("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTY4NTUzNDkyOTY2MiwiaXN0IjoxNjg1NTM0OTI3ODYyLCJpc3MiOiJCb25nb3RydW1tZXIiLCJqdGkiOiIzYjAzNzYwYy1kZjE1LTQ0YWMtODgzNS02NTU2MTQ1ZWRiM2YifQ.eyJ0eXAiOiJhY2Nlc3MiLCJ1aWQiOjEsImNpZCI6MSwicmlkIjoxLCJmbG4iOiJIYW5zIFBldGVyIiwiaGR0IjoxMzY3Mzk2NzczLCJmZHQiOm51bGx9.KR9oyoAb1Vsz15TkjFETQcE3TVEMyfMrgBb0Bv-UDAU");
             
             Client.Headers.Add("Accept", "application/json");
             Client.Headers["Content-Type"] = "application/json";
 
         }
-        // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTY4NTUzNDkyOTY2MiwiaXN0IjoxNjg1NTM0OTI3ODYyLCJpc3MiOiJCb25nb3RydW1tZXIiLCJqdGkiOiIzYjAzNzYwYy1kZjE1LTQ0YWMtODgzNS02NTU2MTQ1ZWRiM2YifQ.eyJ0eXAiOiJhY2Nlc3MiLCJ1aWQiOjEsImNpZCI6MSwicmlkIjoxLCJmbG4iOiJIYW5zIFBldGVyIiwiaGR0IjoxMzY3Mzk2NzczLCJmZHQiOm51bGx9.KR9oyoAb1Vsz15TkjFETQcE3TVEMyfMrgBb0Bv-UDAU
+       
         public static void SetToken(string token)
         {
             Client.Headers.Add("Authorization", $"Bearer {token}");
         }
+
         /// <summary>
         /// Post til at sende data
         /// </summary>
@@ -49,7 +49,7 @@ namespace EmployeeManagement.Services
         {
             // Response
             Client.Headers[HttpRequestHeader.ContentType] = "application/json";
-            string response = ApiHelper.Client.UploadString(ApiHelper.EndPoint = endpoint, jsonData); 
+            string response = ApiHelper.Client.UploadString(ApiHelper.EndPoint = endpoint, "POST", jsonData); 
             return response;
         }
 
@@ -69,6 +69,11 @@ namespace EmployeeManagement.Services
                 builder.Append("?");
                 foreach (var parameter in parameters)
                 {
+                    if (builder.Length != 0)
+                    {
+                        builder.Append("&");
+                    }
+
                     builder.Append($"{parameter.Key}={HttpUtility.UrlEncode(parameter.Value)}");
                 }
             }
@@ -86,25 +91,25 @@ namespace EmployeeManagement.Services
         {
             // Response
             Client.Headers[HttpRequestHeader.ContentType] = "application/json";
+
+            string response = Client.UploadString(ApiHelper.EndPoint = endpoint, "PUT", jsonData);
             
-            byte[] byteResponse = ApiHelper.Client.UploadData(ApiHelper.EndPoint = endpoint, "PUT", Encoding.UTF8.GetBytes(jsonData));
-            string response = Encoding.UTF8.GetString(byteResponse);
             return response;
         }
 
         /// <summary>
-        /// Put til at opdatere data
+        /// Til at sletter brugeren
         /// </summary>
         /// <param name="endpoint">Endpoint</param>
         /// <param name="jsonData">Json Data</param>
         /// <returns></returns>
-        public static string Delete(string endpoint, string jsonData)
+        public static string Delete(string endpoint)
         {
             // Response
             Client.Headers[HttpRequestHeader.ContentType] = "application/json";
 
-            byte[] byteResponse = ApiHelper.Client.UploadData(ApiHelper.EndPoint = endpoint, "DELETE", new byte[0]);
-            string response = Encoding.UTF8.GetString(byteResponse);
+            string response = ApiHelper.Client.UploadString(ApiHelper.EndPoint = endpoint, "DELETE", string.Empty);
+            
             return response;
         }
 
