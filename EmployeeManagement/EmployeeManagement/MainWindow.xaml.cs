@@ -29,6 +29,8 @@ namespace EmployeeManagement
             ViewModelBase.CurrentLoggedInUser = currentLoggedIn;
             InitializeComponent();
             ViewModel = new MainViewModel();
+            if (ViewModel.CloseWindowAction == null)
+                ViewModel.CloseWindowAction = new Action(this.Close);
             this.DataContext = ViewModel;
         }
     }

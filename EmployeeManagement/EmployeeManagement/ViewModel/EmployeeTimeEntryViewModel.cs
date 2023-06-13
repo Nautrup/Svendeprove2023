@@ -19,6 +19,7 @@ namespace EmployeeManagement.ViewModel
     {
         private ExceptionHttpHelper exceptionHttpHelper;
         private int DUMMYTESTLOCATIONID = 3;
+
         public EmployeeTimeEntryViewModel()
         {
             LoadTimeEntryTypes();
@@ -29,6 +30,7 @@ namespace EmployeeManagement.ViewModel
         public ICommand ClockInUserCommand { get; set; }
         public ICommand ClockOutUserCommand { get; set; }
 
+        #region ObservableCollection
         public ObservableCollection<User> UserCollection { get; set; } = new();
 
         public ObservableCollection<TimeEntryType> TimeEntryTypeCollection { get; set; } = new();
@@ -36,6 +38,7 @@ namespace EmployeeManagement.ViewModel
         public ObservableCollection<TimeEntry> TimeEntryCollection { get; set; } = new();
 
         public ObservableCollection<TimeEntry> TimeEntryOutCollection { get; set; } = new();
+        #endregion
 
         // Det indstastede bruger ID i textbox
         public int UserID {
@@ -43,15 +46,8 @@ namespace EmployeeManagement.ViewModel
             set
             {
                 _userID = value;
-                //CheckForExistingUser();
                 OnPropertyChanged(nameof(UserID));
             }
-        }
-
-        // Den fundet bruger
-        public User FoundUser {
-            get { return _foundUser; }
-            set { _foundUser = value; OnPropertyChanged(nameof(FoundUser)); }
         }
 
         // Valgte entry type
@@ -95,7 +91,7 @@ namespace EmployeeManagement.ViewModel
         }
 
         // Henter vores brugere
-        private User GetUser(int userId)
+        private User GetUser(int? userId)
         {
             try
             {
@@ -134,6 +130,7 @@ namespace EmployeeManagement.ViewModel
                     {
                         entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start);
                         entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
+                        entry.Messages = GetMessages(entry.ID);
                         
                         if (entry.StartDate.Date == CurrentDate.Date)
                         {
@@ -159,11 +156,21 @@ namespace EmployeeManagement.ViewModel
         {
             TimeEntryTypeCollection.Clear();
 
-
-
             foreach (var type in TimeEntyService.GetEntryTypes())
             {
                 TimeEntryTypeCollection.Add(type);
+            }
+        }
+
+        // Henter TimeEntryMessages
+        private List<TimeEntryMessage> GetMessages(int? entryId)
+        {
+            using (ApiHelper.Client)
+            {
+                string json = ApiHelper.Get($"/entry/{entryId}/messages");
+
+                return JsonConvert.DeserializeObject<List<TimeEntryMessage>>(json);
+                
             }
         }
 

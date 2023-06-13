@@ -1,8 +1,10 @@
-﻿using EmployeeManagement.Services;
+﻿using EmployeeManagement.Common;
+using EmployeeManagement.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -14,10 +16,11 @@ namespace EmployeeManagement.Models
 {
     public class TimeEntry
     {
-        public int ID { get; set; }
+        public int? ID { get; set; }
+        
         public User User { get; set; }
 
-        public int UserId { get; set; } // Til test
+        public int? UserId { get; set; } // Til test
         
         public int CompanyId { get; set; }
 
@@ -29,8 +32,8 @@ namespace EmployeeManagement.Models
         
         public decimal Duration { get; set; }
         public int? GroupingID { get; set; }
-
-        public List<TimeEntryMessage> TimeEntryMessage { get; set; }
+        public List<int> MessageIds { get; set; }
+        public List<TimeEntryMessage> Messages { get; set; }
         public Location Location { get; set; }
 
         public int LocationId { get; set; } // Til tesst
@@ -43,12 +46,11 @@ namespace EmployeeManagement.Models
 
         public DateTime Date { get; set; }
 
-
-
         /// <summary>
-        /// Opretter en ny vagt
+        /// Opretter ny vagt
         /// </summary>
-        public void Create()
+        /// <returns>Den nye vagt</returns>
+        public TimeEntry Create()
         {
            
             using (ApiHelper.Client)
@@ -69,10 +71,45 @@ namespace EmployeeManagement.Models
 
                 var jsonData = JsonConvert.SerializeObject(newEntry);
 
-                ApiHelper.Post("/entry", jsonData);
+                string postResponse = ApiHelper.Post("/entry", jsonData);
+                return JsonConvert.DeserializeObject<TimeEntry>(postResponse);
 
             }
            
         }
+
+        /// <summary>
+        /// Tilføjer en kommentar på en vagt
+        /// </summary>
+        /// <param name="comment"></param>
+       public void AddComment(string comment)
+        {
+            TimeEntryMessage newMessage = new TimeEntryMessage(User, this, UnixConversion.ToUnixTime(DateTime.Today), comment);
+            newMessage.Create();
+            
+        }
+
+        /// <summary>
+        /// Frigiver en vagt
+        /// </summary>
+        public void ReleaseEntry()
+        {
+            using (ApiHelper.Client)
+            {
+                TimeEntry newEntry = new TimeEntry()
+                {
+                    UserId = null,
+                    Start = Start,
+                    End = End,
+                    Duration = Duration,
+                    TimeEntryTypeId = TimeEntryTypeId,
+                    LocationId = LocationId,
+                };
+
+                var jsonData = JsonConvert.SerializeObject(newEntry);
+                string response = ApiHelper.Put($"/entry/{this.ID}", jsonData);
+                
+            }
+        }   
     }
 }

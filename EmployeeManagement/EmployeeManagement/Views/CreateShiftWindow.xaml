@@ -11,11 +11,15 @@
         xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" 
         d:DataContext="{d:DesignInstance Type=viewmodel:WorkplanViewModel}"
         mc:Ignorable="d"
-        Title="CreateShiftWindow" Height="450" Width="800">
+        BorderThickness="0"
+        WindowStyle="ToolWindow"
+        Title="Opret vagt" Height="450" Width="800">
 
     <Grid Margin="5 0 5 0">
 
         <StackPanel Width="350">
+            <TextBlock Text="Opret vagt"
+                       FontSize="16" FontWeight="Bold" />
             <TextBlock Text="Vælg medarbejder:" />
             <ComboBox ItemsSource="{Binding UserCollection}" DisplayMemberPath="FullName"
                       SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}" />
@@ -35,6 +39,9 @@
                 <Models:TimeEntryType ID="2" Name="Aftenvagt"/>
 
             </ComboBox>
+
+            <TextBlock Text="Besked:" />
+            <TextBox Text="{Binding EntryMessage, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="50"  />
 
             <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CreateTimeEntryCommand}" >
                 <StackPanel Orientation="Horizontal">

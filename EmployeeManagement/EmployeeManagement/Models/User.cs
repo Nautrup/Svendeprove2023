@@ -34,14 +34,13 @@ namespace EmployeeManagement.Models
 
         public List<Location> Locations { get; set; }
 
-
-        public void Update()
+        public void UpdateTest()
         {
             // Api til update
 
             using (ApiHelper.Client)
             {
-                User newUser = new User()
+                User user = new User()
                 {
                     UserRole = UserRole,
                     FirstName = FirstName,
@@ -54,51 +53,50 @@ namespace EmployeeManagement.Models
                     Locations = Locations
                 };
 
-              
+                var jsonData = JsonConvert.SerializeObject(user);
 
-                var jsonData = JsonConvert.SerializeObject(newUser);
-
-                ApiHelper.Put($"/user{ID}", jsonData);
+                ApiHelper.Put($"/user/{ID}", jsonData);
 
             }
-            
         }
 
         /// <summary>
-        /// Opretter en ny bruger
+        /// Opdatere en bruger
         /// </summary>
-        public void Create()
+        public void Update()
         {
-            try
+            // Api til update
+
+            using (ApiHelper.Client)
             {
-                using (ApiHelper.Client)
+                User currentUser = new User()
                 {
-                    User newUser = new User()
-                    {
-                        UserRole = UserRole,
-                        FirstName = FirstName,
-                        MiddleName = MiddleName,
-                        SurName = SurName,
-                        Company = Company,
-                        ProfileImage = ProfileImage,
-                        HiredDate = HiredDate,
-                        FiredDate = FiredDate,
-                        Locations = Locations,
-                        
-                    };
+                    UserRole = UserRole,
+                    FirstName = FirstName,
+                    MiddleName = MiddleName,
+                    SurName = SurName,
+                    Company = Company,
+                    ProfileImage = ProfileImage,
+                    HiredDate = HiredDate,
+                    FiredDate = FiredDate,
+                    Locations = Locations
+                };
 
-                    var jsonData = JsonConvert.SerializeObject(newUser);
+                UserCreate updateUser = new UserCreate();
+                updateUser.Update(currentUser);
 
-                    ApiHelper.Post("/user", jsonData);
+                //var jsonData = JsonConvert.SerializeObject(currentUser);
 
-                }
+                //ApiHelper.Put($"/user/{currentUser.ID}", jsonData);
+
             }
-            catch (WebException ex)
-            {
-                throw new WebException(ex.Message);
-            }
+
         }
-       
+
+        /// <summary>
+        /// Sletter alle information om en bruger
+        /// </summary>
+        /// <exception cref="WebException"></exception>
         public void Delete()
         {
             try
@@ -112,6 +110,28 @@ namespace EmployeeManagement.Models
             catch (WebException ex)
             {
                 throw new WebException(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Tilføjer ny lokation til bruger
+        /// </summary>
+        /// <param name="location"></param>
+        public void AddLocation(Location location)
+        {
+            Locations.Add(location);
+        }
+
+        /// <summary>
+        /// Fjerner lokation på en bruger
+        /// </summary>
+        /// <param name="location"></param>
+        public void RemoveLocation(Location location)
+        {
+            if (Locations.Contains(location))
+            {
+                Locations.Remove(location);
+                //Delete($"/location/{location.ID}");
             }
         }
 

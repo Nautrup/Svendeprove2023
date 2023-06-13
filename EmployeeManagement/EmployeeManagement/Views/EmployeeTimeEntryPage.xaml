@@ -267,10 +267,6 @@
                          Height="25" 
                          Grid.Row="2"/>
                 
-                <TextBlock Text="{Binding FoundUser.FullName, UpdateSourceTrigger=PropertyChanged, Delay=200}"
-                           Grid.Row="3" Margin="0 0 0 0" FontWeight="SemiBold" />
-
-                
                 
                 <TextBlock Text="Job nr:" 
                            Grid.Row="4" Margin="0 2 0 2" />

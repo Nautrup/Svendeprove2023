@@ -26,6 +26,7 @@ namespace EmployeeManagement.ViewModel
             GetLocations();
             GetUserRoles();
             Company = CurrentLoggedInUser.Company;
+
         }
 
         #region ICommand
@@ -85,10 +86,13 @@ namespace EmployeeManagement.ViewModel
             get { return _selectedLocation; }
             set { _selectedLocation = value; OnPropertyChanged(nameof(SelectedLocation)); }
         }
-
+        // Valgte brugerrolle
         public UserRole SelectedUserRole {
             get { return _selectedUserRole; }
-            set { _selectedUserRole = value; OnPropertyChanged(nameof(SelectedUserRole));
+            set 
+            { 
+                _selectedUserRole = value; 
+                OnPropertyChanged(nameof(SelectedUserRole));
             }
         }
 
@@ -137,13 +141,18 @@ namespace EmployeeManagement.ViewModel
             {
                 LocationCollection.Clear();
 
-                var json = ApiHelper.Get(endpoint: "/location");
+                //var json = ApiHelper.Get(endpoint: "/location");
 
-                var list = JsonConvert.DeserializeObject<List<Location>>(json);
+                //var list = JsonConvert.DeserializeObject<List<Location>>(json);
 
-                foreach (Location company in list)
+                //foreach (Location company in list)
+                //{
+                //    LocationCollection.Add(company);
+                //}
+
+                foreach (var location in CurrentLoggedInUser.Locations)
                 {
-                    LocationCollection.Add(company);
+                    LocationCollection.Add(location);
                 }
             }
             catch (WebException ex)
@@ -177,7 +186,6 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-        
         // Tjekker om vi kan oprette
         private bool CanCreate()
         {

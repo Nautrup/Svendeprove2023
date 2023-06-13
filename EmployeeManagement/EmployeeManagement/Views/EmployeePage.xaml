@@ -80,15 +80,21 @@
         <Grid Grid.Column="2" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" MinWidth="250" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{Binding CurrentLoggedInUser.Company.Name}" FontSize="32" FontWeight="SemiBold" Grid.Row="1" Grid.Column="1"
-                           HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 5 0" />
+            <StackPanel Grid.Row="1" Grid.Column="1">
                 
-           
+                <TextBlock Text="Vælg lokation:" FontSize="24" FontWeight="SemiBold" 
+                           HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 5 0" />
+                <ComboBox ItemsSource="{Binding CurrentLoggedInUser.Locations}" DisplayMemberPath="Name"
+                          SelectedIndex="0" IsSynchronizedWithCurrentItem="True"
+                          SelectedItem="{Binding SelectedUserLocation}" />
+
+            </StackPanel>
+
 
             <Grid Grid.Row="1" Grid.Column="2">
 
@@ -144,7 +150,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Grid.Column="0" Text="Navn" VerticalAlignment="Center" />
-                                    <TextBox Grid.Column="1" Text="{Binding SelectedUser.FirstName}" Height="25" />
+                                    <TextBox Grid.Column="1" Text="{Binding SelectedUser.FirstName, UpdateSourceTrigger=PropertyChanged}" Height="25" />
 
 
                                     <TextBlock Grid.Column="2" Text="Mellemnavn:" VerticalAlignment="Center"  Margin="5 0 0 0" />
@@ -188,26 +194,86 @@
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="auto" />
                                         <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
-                                    <ComboBox ItemsSource="{Binding SelectedUser.Locations}" DisplayMemberPath="Name"  Grid.Column="1"
-                                              SelectedValue="{Binding SelectedUser.Locations[0]}"
-                                              Height="25" >
+                                    <ListBox ItemsSource="{Binding SelectedUser.Locations}" DisplayMemberPath="Name"  Grid.Column="1"
+                                              SelectedValue="{Binding SelectedUser.Locations[0]}" SelectedItem="{Binding SelectedLocation}"
+                                              Height="50" >
 
-                                    </ComboBox>
+                                    </ListBox>
                                     
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
+                                            Command="{Binding ShowAddLocationsCommand}"
                                             Width="50" Height="25">
                                         <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" />
+                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
                                     
-                                    <!--Leder-->
-                                    <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="25 0 0 0">
-                                        
-                                        
-                                    </StackPanel>
+                                    <!--Fjern lokation-->
+
+                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="3"
+                                            Command="{Binding RemoveSelectedUserLocationCommand}"
+                                            Width="50" Height="25"
+                                            >
+                                        <StackPanel Orientation="Horizontal">
+                                            <Icon:PackIconMaterial Kind="Delete" VerticalAlignment="Center" Width="12" Height="12" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    
+                                    <!--POPUP FOR AT TILFØJE LOKATION TIL BRUGER-->
+                                    <Popup Visibility="{Binding AddLocationToUserCommand, Converter={StaticResource BoolToVis}}" Grid.Column="4" IsOpen="{Binding  ShowAddLocationsPopUp}"
+                                           Margin="25 25"
+                                           Width="250" Height="150" AllowsTransparency="True" >
+                                        <Border Background="LightBlue" CornerRadius="15"  >
+                                            <StackPanel Grid.Column="4" Margin="10" >
+                                                <TextBlock Text="Tilføj afdeling"
+                                                           FontSize="14" FontWeight="Bold"
+                                                           Grid.ColumnSpan="3"/>
+
+                                                <ComboBox ItemsSource="{Binding LocationCollection}" DisplayMemberPath="Name"  Grid.Column="0"
+                                                  SelectedValue="{Binding SelectedLocation}"
+                                                  Height="25" Margin="0 15 0 0" >
+
+                                                </ComboBox>
+
+
+                                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                    
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,50,0" Grid.Column="2"
+                                                    Command="{Binding CancelAddLocationCommand}"
+                                                        HorizontalAlignment="Left"
+                                                    Width="80" Height="25">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" 
+                                                   Margin="0 0 2 0"
+                                                   Width="12" Height="12" />
+                                                            <TextBlock Text=" Fortryd" />
+                                                        </StackPanel>
+                                                    </Button>
+
+
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,5,0" Grid.Column="2"
+                                                Command="{Binding AddLocationToUserCommand}"
+                                                    
+                                                Width="80" Height="25">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" 
+                                               Margin="0 0 2 0"
+                                               Width="12" Height="12" />
+                                                        <TextBlock Text=" Tilføj" />
+                                                    </StackPanel>
+                                                </Button>
+
+                                                    
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
+                                    
                                 </Grid>
 
 
@@ -217,17 +283,22 @@
                                         <ColumnDefinition Width="100" />
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
+                                    
                                     <TextBlock Text="Roller:" VerticalAlignment="Center" />
+                                    
                                     <TextBlock Text="{Binding SelectedUser.UserRole.Name}" Grid.Column="1" />
                                    
-
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
                                             Width="50" Height="25">
                                         <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" />
+                                            <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
+
+
+
                                 </Grid>
 
                                 <!--Billede-->

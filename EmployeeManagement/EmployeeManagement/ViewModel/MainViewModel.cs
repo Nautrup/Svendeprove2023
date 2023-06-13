@@ -1,6 +1,7 @@
 ﻿using EmployeeManagement.Common;
 using EmployeeManagement.Models;
 using EmployeeManagement.Services;
+using EmployeeManagement.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,17 +20,31 @@ namespace EmployeeManagement.ViewModel
             OpenEmployeePageCommand = new RelayCommand(o => { OpenEmployeePage(); });
             OpenEmployeeWorkplanPageCommand = new RelayCommand(o => { OpenEmployeeWorkplanPage(); });
             OpenEmployeeTimeStampCommand = new RelayCommand(o => OpenEmployeeTimeStamp());
-
+            OpenEmployeeStatisticsPageCommand = new RelayCommand(o => OpenEmployeeStatisticsPage());
+            LogOutCommand = new RelayCommand(o => 
+            { 
+                LoginWindow login = new LoginWindow();
+                CloseWindowAction();
+                login.ShowDialog(); 
+            });
             ShowMenuDependingOnPermissions();
         }
 
-       
+     
+
+
 
         #region ICommands
         public ICommand OpenEmployeePageCommand { get; set; }
         public ICommand OpenEmployeeWorkplanPageCommand { get; set; }
         public ICommand OpenEmployeeTimeStampCommand  { get; set; }
+        public ICommand OpenEmployeeStatisticsPageCommand { get; set; }
+
+        public ICommand LogOutCommand { get; set; }
         #endregion
+
+        // Lukker vinduet
+        public Action CloseWindowAction { get; set; }
 
         public string FramePage 
         {
@@ -44,26 +59,30 @@ namespace EmployeeManagement.ViewModel
         public bool ShowWorkPlan { get; set; } = false;
         public bool ShowEmployeePage { get; set; } = false;
         public bool ShowTimeStampPage { get; set; } = false;
+        public bool ShowStatisticsPage { get; set; } = false;
         #region methods
 
+        // Holder styr på hvilke menuer brugeren skal have vist
         private void ShowMenuDependingOnPermissions()
         {
+            // 2 admin
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(1))
             {
                 ShowWorkPlan = true;
                 ShowEmployeePage = true;
                 ShowTimeStampPage = true;
-                return;
+                ShowStatisticsPage = true;
+                
             }
+
             // 2 see own entries
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
             {
                 ShowWorkPlan = true;
                 ShowEmployeePage = false;
                 ShowTimeStampPage = true;
-                return;
+                ShowStatisticsPage = true;
             }
-
         }
 
         private void OpenEmployeeWorkplanPage()
@@ -81,9 +100,9 @@ namespace EmployeeManagement.ViewModel
             FramePage = "Views/EmployeeTimeEntryPage.xaml";
         }
 
-        private void OpenEmployeeEntryReportPage()
+        private void OpenEmployeeStatisticsPage()
         {
-            FramePage = "";
+            FramePage = "Views/StatisticsPage.xaml";
         }
         #endregion
 

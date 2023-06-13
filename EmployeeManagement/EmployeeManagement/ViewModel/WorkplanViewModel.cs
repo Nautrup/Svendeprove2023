@@ -24,6 +24,8 @@ namespace EmployeeManagement.ViewModel
             EmployeeViewModel.SelectedUser = CurrentLoggedInUser;
             CreateTimeEntryCommand = new RelayCommand(o => CreateEntry(), o => SelectedUser != null );
 
+          
+
             if (CurrentLoggedInUser.Locations.Count != 0)
             {
                 GetUsers(CurrentLoggedInUser.ID);
@@ -38,10 +40,15 @@ namespace EmployeeManagement.ViewModel
         public bool ShowCreateShiftButton { get; set; } = false;
 
         public ICommand CreateTimeEntryCommand { get; set; }
+        public ICommand ReleaseTimeEntryCommand { get; set; }
 
+        #region ObservableCollections
         public ObservableCollection<User> UserCollection { get; set; } = new();
         public ObservableCollection<TimeEntryType> TimeEntryTypeCollection { get; set; } = new();
         public ObservableCollection<TimeEntry> TimeEntryCollections { get; set; } = new();
+        #endregion
+
+        // Valgte bruger
         public User SelectedUser {
             get { return _selectedUser; }
             set { _selectedUser = value; OnPropertyChanged(nameof(SelectedUser));
@@ -58,11 +65,21 @@ namespace EmployeeManagement.ViewModel
             set { _end = value; OnPropertyChanged(nameof(End)); }
         }
 
+      
+
+        // Lukker vinduet
         public Action CloseWindowAction { get; set; }
 
+        // Valgte vagt
         public TimeEntryType SelectedTimeEntryType {
             get { return _selectedTimeEntryType; }
             set { _selectedTimeEntryType = value; OnPropertyChanged(nameof(SelectedTimeEntryType)); }
+        }
+
+        // Vagt besked
+        public string EntryMessage {
+            get { return _entryMessage; }
+            set { _entryMessage = value; OnPropertyChanged(nameof(EntryMessage)); }
         }
 
         // Henter nuværende logged inds brugers vagter
@@ -143,6 +160,7 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Opretter en vagt
         private void CreateEntry()
         {
             try
@@ -157,7 +175,20 @@ namespace EmployeeManagement.ViewModel
                     LocationId = SelectedUser.Locations[0].ID,
                 };
 
-                newEntry.Create();
+                // Opretter en entry og returner den ssom object m/ dens ID.
+                TimeEntry createdEntry =  newEntry.Create();
+                
+                // Hvis der en besked skal den oprette den
+                if (!string.IsNullOrEmpty(EntryMessage))
+                {
+                    TimeEntryMessage newMessage = new TimeEntryMessage(user: SelectedUser, timeEntry: createdEntry, createdAt: UnixConversion.ToUnixTime(DateTime.Now), message: EntryMessage);
+
+                    newMessage.Create();    
+                }
+
+                // Lukker vinduet efter den er brugt
+                CloseWindowAction();
+
             }
             catch (WebException ex)
             {
@@ -168,6 +199,8 @@ namespace EmployeeManagement.ViewModel
         }
 
         #region Private Variables
+        
+        private string _entryMessage;
         private DateTime _end = DateTime.UtcNow;
         private User _selectedUser;
         private DateTime _start = DateTime.UtcNow;

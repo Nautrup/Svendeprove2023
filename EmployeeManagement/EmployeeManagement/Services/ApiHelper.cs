@@ -26,6 +26,11 @@ namespace EmployeeManagement.Services
         {
             Client = new WebClient();
 
+            if (Client.BaseAddress != "http://localhost:6969")
+            {
+                EndPoint = "http://localhost:6969";
+            }
+
             Client.BaseAddress = EndPoint;
 
             

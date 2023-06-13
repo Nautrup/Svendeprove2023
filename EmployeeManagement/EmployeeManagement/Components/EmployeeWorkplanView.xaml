@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EmployeeManagement.Components" xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:EmployeeManagement.Components" 
+             xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel"
+             d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920">
     <UserControl.Resources>
@@ -22,7 +25,6 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
-
             <RowDefinition Height="*"  />
         </Grid.RowDefinitions>
 
@@ -43,21 +45,13 @@
                     <CalendarButton Content="Week" Background="Transparent" Width="50" Height="35"  />
                     <CalendarButton Content="Month" Background="Transparent" Width="50" Height="35" />
 
-
                 </StackPanel>
 
-                <!--OPRET VAGT-->
-                <!--<Button 
-                                            Style="{StaticResource addNewMemeberButton}"  Width="150"
-                                        Visibility="{Binding ShowCreateShiftButton, Converter={StaticResource BoolToVis}}"
-                                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 0 5"
-                                            Command="{Binding ShowCreateWorkplanCommand }"  Grid.Column="1" >
-                    <StackPanel Orientation="Horizontal">
-                        <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
-                        <TextBlock Text="Opret vagt" />
-                    </StackPanel>
-                </Button>-->
-
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Text="Arbejdstimer denne uge:" Margin="0 0 5 0" />
+                    <TextBlock Text="{Binding WeeklyWorkHours}" />
+                </StackPanel>
+                
             </Grid>
 
             <Grid Grid.Column="1" HorizontalAlignment="Right">
@@ -86,6 +80,39 @@
             </Grid>
         </Grid>
 
+        
+        <!--POPUP TIL AT TILFØJE KOMMENTAR-->
+        <Popup IsOpen="{Binding ShowAddCommentPopup}" Placement="MousePoint"  PopupAnimation="Slide" >
+            <Border Background="AliceBlue">
+                <StackPanel Margin="5" Width="250">
+                    <TextBlock Text="Tilføj kommentar" FontSize="14" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding NewComment, UpdateSourceTrigger=PropertyChanged}" 
+                             Height="80" />
+
+                    <StackPanel Orientation="Horizontal">
+                        
+                    <Button Style="{StaticResource addNewMemeberButton}" Width="100"
+                            VerticalAlignment="Center" Margin="5"
+                            Command="{Binding AddCommentToEntryCommand}"  Grid.Column="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Tilføj" />
+                        </StackPanel>
+                    </Button>
+
+                        <Button Style="{StaticResource addNewMemeberButton}" Width="100" IsCancel="True"
+                            VerticalAlignment="Center" Margin="5" Background="OrangeRed"
+                            Command="{Binding CancelCommentCommand}"  Grid.Column="1">
+                            <StackPanel Orientation="Horizontal">
+                                <Icon:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                <TextBlock Text="Fortryd" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
+        
         <!--Mandag-->
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
@@ -103,22 +130,53 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
 
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
                 </ListView>
             </Grid>
+
+            
         </Grid>
 
         <!--Tirsdag-->
@@ -134,30 +192,54 @@
                     <TextBlock Text="{Binding TuesdayDate.Date, StringFormat='dd/MM/y'}"
                                                    VerticalAlignment="Bottom" HorizontalAlignment="Center"
                                         FontSize="14" FontWeight="SemiBold" />
+                    
                 </StackPanel>
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding TuesdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding TuesdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}"
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}" >
+
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                    <TextBlock Text=" - " Width="30" />
-                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                    <TextBlock Text="{Binding Duration}" Width="auto" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
                                     <TextBlock Text="T" />
 
                                 </StackPanel>
+                                <TextBlock Text="Beskeder:" />
 
-                                <TextBlock Grid.Row="1" Text="{Binding TimeEntryMessage.Message}" />
-                            </Grid>
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
@@ -182,16 +264,48 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding WensdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding WensdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
+
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -217,20 +331,50 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}" >
 
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
                 </ListView>
             </Grid>
         </Grid>
@@ -252,17 +396,47 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding FridayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding FridayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
 
                     <ListView.ItemTemplate>
-
                         <DataTemplate >
-                            <StackPanel Orientation="Horizontal"  >
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -288,16 +462,48 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
+
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -323,22 +529,53 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
+                <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                          SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
 
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="WrapWithOverflow" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
                 </ListView>
             </Grid>
+            
         </Grid>
 
     </Grid>

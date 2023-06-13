@@ -21,21 +21,52 @@ namespace EmployeeManagement.ViewModel
     public class EmployeeViewModel : ViewModelBase
     {
         ExceptionHttpHelper exceptionHttpHelper;
+        
         public EmployeeViewModel()
         {
             // ICommands
-            UpdateUserInformationCommand = new RelayCommand(o => UpdateUserInformation(), o => SelectedUser != null);
+            UpdateUserInformationCommand = new RelayCommand(o => UpdateUserInformation(SelectedUser), o => SelectedUser != null);
             CreateNewUserCommand = new RelayCommand(o => { } , o => SelectedUser != null);
             ShowCreateWindowCommand = new RelayCommand(o => ShowCreateWindow()) ;
             FindNextWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(7), o => SelectedUser != null);
             FindLastWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(-7), o => SelectedUser != null);
             ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => true);
 
-            DeleteUserCommand = new RelayCommand(o => DeleteUser(), o => SelectedUser != null);
-            
-            // Metoder der skal kørers når viewmodel initialisiere
-            GetUsers(); // Henter alle brugere som har noget med den person at gøre
+            CancelCommentCommand = new RelayCommand(o => ShowAddCommentPopup = false);
+            ShowAddCommentPopupCommand = new RelayCommand(o => ShowAddCommentPopup = true, o => SelectedTimeEntry != null);
 
+            AddCommentToEntryCommand = new RelayCommand(o => 
+            {
+                try
+                {
+                    SelectedTimeEntry.AddComment(NewComment);
+
+                }
+                catch (WebException ex)
+                {
+                    exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                    MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show($"{ex.Message}", "Fejl opstået");
+                }
+                ShowAddCommentPopup = false; 
+                
+            });
+            AddLocationToUserCommand = new RelayCommand(o => AddLokationToUser(), o => SelectedUser != null);
+
+            RemoveSelectedUserLocationCommand = new RelayCommand(o => RemoveLocationToUser(), o => SelectedUser != null);
+            ShowAddLocationsCommand = new RelayCommand(o => ShowAddNewLocationPopup(), o => SelectedUser != null);
+            CancelAddLocationCommand = new RelayCommand(o => ShowAddLocationsPopUp = false, o => true);
+            DeleteUserCommand = new RelayCommand(o => SelectedTimeEntry.ReleaseEntry(), o => SelectedTimeEntry != null);
+            
+            ReleaseTimeEntryCommand = new RelayCommand(o => SelectedTimeEntry.ReleaseEntry(), o => SelectedTimeEntry != null); ;
+         
+            LoadLocations();
+            
             CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
 
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
@@ -44,7 +75,15 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+
+        // holder styr på om brugeren skal have en opet vagt knap visible = true
         public bool ShowCreateShiftButton { get; set; } = true;
+       
+        // holder styr på om vores popup skal vises
+        public bool ShowAddLocationsPopUp {
+            get { return _showAddLocationsPopUp; }
+            set { _showAddLocationsPopUp = value; OnPropertyChanged(nameof(ShowAddLocationsPopUp)); }
+        }
 
         #region Icommands
         public ICommand UpdateUserInformationCommand { get; set; }
@@ -54,8 +93,18 @@ namespace EmployeeManagement.ViewModel
         public ICommand FindLastWeekWorkplanCommand { get; set; }
         public ICommand DeleteUserCommand { get; set; }
         public ICommand ShowCreateWorkplanCommand { get; set; }
+        public ICommand ReleaseTimeEntryCommand { get; set; }
+        // Pop up
+        public ICommand RemoveSelectedUserLocationCommand { get; set; }
+        public ICommand AddCommentToEntryCommand { get; set; }
+        public ICommand ShowAddCommentPopupCommand { get; set; }
+        public ICommand CancelCommentCommand { get; set; }
+        public ICommand ShowAddLocationsCommand { get; set; }
+        public ICommand AddLocationToUserCommand { get; set; }
+        public ICommand CancelAddLocationCommand { get; set; }
         #endregion
 
+        // Nuværende uges mandags dato
         public DateTime CurrentWeekStartDate {
             get { return _currentWeekStartDate; }
             set 
@@ -92,6 +141,54 @@ namespace EmployeeManagement.ViewModel
 			}
 		}
 
+        // Valgte lokation i popuppen
+        public Location SelectedLocation {
+            get { return _selectedLocation; }
+            set { _selectedLocation = value; OnPropertyChanged(nameof(SelectedLocation)); }
+        }
+
+        // Afdelingslederens valget lokation til at se sine medarbejder pr. lokation
+        public Location SelectedUserLocation {
+            get { return _SelectedUserLocation; }
+            set 
+            { 
+                _SelectedUserLocation = value; 
+                OnPropertyChanged(nameof(SelectedUserLocation));
+                
+                if (SelectedUserLocation != null)
+                {
+                    GetUsers();
+                }
+            }
+        }
+
+        // Valgte TimeEntry 
+        public TimeEntry SelectedTimeEntry {
+            get { return _SelectedTimeEntry; }
+            set 
+            { 
+                _SelectedTimeEntry = value; 
+                OnPropertyChanged(nameof(SelectedTimeEntry));
+            }
+        }
+
+        // Vores text vi tilføjeer til en timeEntry
+        public string NewComment {
+            get { return _newComment; }
+            set { _newComment = value; OnPropertyChanged(nameof(NewComment));
+            }
+        }
+
+        // Holder sytr på om vi skal vise popup med at tilføje en kommentar 
+        public bool ShowAddCommentPopup {
+            get { return _showAddCommentPopup; }
+            set
+            {
+                _showAddCommentPopup = value; OnPropertyChanged(nameof(ShowAddCommentPopup));
+            }
+        }
+
+
         #region ObservableCollectiions
         public ObservableCollection<User> UserCollection { get; set; } = new();
 
@@ -118,6 +215,14 @@ namespace EmployeeManagement.ViewModel
             get { return _mondayDate; }
             set { _mondayDate = value; OnPropertyChanged(nameof(MondayDate)); }
         }
+        private decimal _weeklyWorkHours;
+
+        public decimal WeeklyWorkHours {
+            get { return _weeklyWorkHours; }
+            set { _weeklyWorkHours = value; OnPropertyChanged(nameof(WeeklyWorkHours));
+            }
+        }
+
 
         public DateTime TuesdayDate {
             get { return _tuesdayDate; }
@@ -163,8 +268,8 @@ namespace EmployeeManagement.ViewModel
                 {
                     UserCollection.Clear();
 
-                    string json = ApiHelper.Get($"/user"); 
-
+                    string json = ApiHelper.Get($"/location/{SelectedUserLocation.ID}/users");
+                        
                     var list = JsonConvert.DeserializeObject<List<User>>(json);
                     // Looper gennem hver bruger, tilføjer lokationer derefter i collection af brugere
                     foreach (var user in list)
@@ -182,6 +287,29 @@ namespace EmployeeManagement.ViewModel
                 MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
             }
         }
+
+
+        private User RetrieveUserById(int userId)
+        {
+            try
+            {
+                using (ApiHelper.Client)
+                {
+                    string json = ApiHelper.Get($"/user/{userId}");
+
+                    return JsonConvert.DeserializeObject<User>(json);
+                    
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+                
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+                return null;
+            }
+        }
+   
 
         // henter brugers rollr
         private UserRole GetUserRole(int userID)
@@ -217,12 +345,10 @@ namespace EmployeeManagement.ViewModel
 
                     List<Location> locations = JsonConvert.DeserializeObject<List<Location>>(json);
 
-                    foreach (var location in locations)
-                    {
-                        location.LocationManager = GetLocationLeaders(location.ID)[0];
-                    }
-
-                    
+                    //foreach (var location in locations)
+                    //{
+                    //    location.LocationManager = GetLocationLeaders(location.ID)[0];
+                    //}
 
                     return locations;
                 }
@@ -277,10 +403,10 @@ namespace EmployeeManagement.ViewModel
 
                     string entriesJson = ApiHelper.Get($"/entries", param);
 
-                    
-                    //string json = ApiHelper.Client.DownloadString($"/entries?user={userId}");
-
                     List<TimeEntry> list = JsonConvert.DeserializeObject<List<TimeEntry>>(entriesJson); //JsonConvert.DeserializeObject<List<TimeEntry>>(json);
+
+                    // Sætte ugens arbejdstimer til 0
+                    WeeklyWorkHours = 0;
 
                     // Rydder listerne
                     TimeEntriesCollection.Clear();
@@ -307,7 +433,8 @@ namespace EmployeeManagement.ViewModel
 
                         entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start); // entry.StartDate.AddSeconds(entry.Start);
                         entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
-                        entry.TimeEntryMessage = GetTimeEntryMessages(entry.ID);
+                        entry.Messages = GetTimeEntryMessages(entry.ID);
+                       
                         DayOfWeek day = entry.StartDate.DayOfWeek;
 
                         switch (day)
@@ -316,45 +443,51 @@ namespace EmployeeManagement.ViewModel
                                 if (entry.StartDate.Date == MondayDate.Date)
                                 {
                                     MondayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Tuesday:
 
-                                if (entry.StartDate == TuesdayDate.Date)
+                                if (entry.StartDate.Date == TuesdayDate.Date)
                                 {
                                     TuesdayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Wednesday:
                                 if(entry.StartDate.Date == WednsdayDate.Date)
                                 {
                                     WensdayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Thursday:
                                 if (entry.StartDate.Date == ThursdayDate.Date)
                                 {
                                     ThursdayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Friday:
                                 if (entry.StartDate.Date == FridayDate.Date)
                                 {
                                     FridayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Saturday:
                                 if (entry.StartDate.Date == SaturdayDate.Date)
                                 {
                                     SaturdayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
                                 break;
                             case DayOfWeek.Sunday:
                                 if (entry.StartDate.Date == SundayDate.Date)
                                 {
-
+                                    SundayTimeEntriesCollection.Add(entry);
+                                    WeeklyWorkHours += entry.Duration;
                                 }
-                                SundayTimeEntriesCollection.Add(entry);
                                 break;
                             default:
                                 throw new InvalidOperationException("Invalid date found");
@@ -372,7 +505,7 @@ namespace EmployeeManagement.ViewModel
         }
 
         // Henter en TimeEntrys messsage
-        private List<TimeEntryMessage> GetTimeEntryMessages(int entryId)
+        private List<TimeEntryMessage> GetTimeEntryMessages(int? entryId)
         {
             try
             {
@@ -380,7 +513,14 @@ namespace EmployeeManagement.ViewModel
                 {
                     string json = ApiHelper.Get($"/entry/{entryId}/messages");
 
-                    return JsonConvert.DeserializeObject<List<TimeEntryMessage>>(json);
+                    List<TimeEntryMessage> messages = new List<TimeEntryMessage>();
+                    foreach (var message in JsonConvert.DeserializeObject<List<TimeEntryMessage>>(json) )
+                    {
+                        message.User = RetrieveUserById(message.UserId);
+                        messages.Add(message);
+                    }
+
+                    return messages;
                 }
             }
             catch (WebException ex)
@@ -392,17 +532,35 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Henter alle lokationer
+        private void LoadLocations()
+        {
+            LocationCollection.Clear();
+            
+            string json = ApiHelper.Get($"/location");
+
+            List<Location> locations = JsonConvert.DeserializeObject<List<Location>>(json);
+
+            foreach (var location in locations)
+            {
+                LocationCollection.Add(location);
+            }
+
+        }
+
         #endregion
 
         #region API Put 
         // Opdatere en brugers information
-        private void UpdateUserInformation()
+        private void UpdateUserInformation(User selectedUser)
         {
             try
             {
                 UserCreate updateUser = new UserCreate();
 
-                updateUser.Update(SelectedUser);
+                updateUser.Update(selectedUser);
+                // Henter brugere igen
+                GetUsers();
             }
             catch (WebException ex)
             {
@@ -421,7 +579,7 @@ namespace EmployeeManagement.ViewModel
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    SelectedUser.Delete();
+                    //SelectedUser.Delete();
                     UserCollection.Remove(SelectedUser); 
                 }
 
@@ -436,7 +594,6 @@ namespace EmployeeManagement.ViewModel
                 MessageBox.Show(exception.Message);
             }
         }
-
 
         #endregion
 
@@ -478,9 +635,69 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Tilføjer lokation til bruger
+        private void AddLokationToUser()
+        {
+            try
+            {
+                // Giver bruger lokation
+                SelectedUser.AddLocation(SelectedLocation);
+                
+                // Opdater bruger information
+                UpdateUserInformation(SelectedUser);
+
+                ShowAddLocationsPopUp = false;
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
+        // Fjerner lokationer
+        private void RemoveLocationToUser()
+        {
+            try
+            {
+                SelectedUser.RemoveLocation(SelectedLocation);
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
+        // Holder styr på om Popup skal vises for at tilføje en lokation
+        private void ShowAddNewLocationPopup()
+        {
+            if (ShowAddLocationsPopUp == true)
+            {
+                ShowAddLocationsPopUp = false;
+            }
+            else
+            {
+                ShowAddLocationsPopUp = true;
+            }
+        }
 
         #region Private Variables
-        
+        private bool _showAddCommentPopup = false;
+        private string _newComment;
+        private Location _SelectedUserLocation;
+        private Location _selectedLocation;
+        private bool _showAddLocationsPopUp;
         private DateTime _currentWeekStartDate;
         private User _selectedUser;
         private Company _selectedCompany;
@@ -491,6 +708,7 @@ namespace EmployeeManagement.ViewModel
         private DateTime _wednsdayDate;
         private DateTime _tuesdayDate;
         private DateTime _mondayDate;
+        private TimeEntry _SelectedTimeEntry;
         #endregion
     }
 }

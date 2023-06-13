@@ -108,20 +108,41 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}"  >
+                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
                 </ListView>
             </Grid>
         </Grid>
@@ -143,26 +164,39 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding TuesdayTimeEntriesCollection}" >
+                <ListView ItemsSource="{Binding TuesdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <StackPanel Orientation="Horizontal" Grid.Row="0">
-                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                    <TextBlock Text=" - " Width="30" />
-                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                    <TextBlock Text="{Binding Duration}" Width="auto" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
                                     <TextBlock Text="T" />
 
                                 </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
 
-                                <TextBlock Grid.Row="1" Text="{Binding TimeEntryMessage.Message}" />
-                            </Grid>
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
 
@@ -187,16 +221,37 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding WensdayTimeEntriesCollection}" >
-
+                <ListView ItemsSource="{Binding WensdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" >
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -222,16 +277,38 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" >
+                <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -257,21 +334,40 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding FridayTimeEntriesCollection}" >
-
+                <ListView ItemsSource="{Binding FridayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}">
                     <ListView.ItemTemplate>
+                        <DataTemplate >
 
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Height="50" >
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-
                 </ListView>
             </Grid>
         </Grid>
@@ -293,16 +389,38 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" >
+                <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -328,16 +446,38 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" >
+                <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text=" - " Width="30" />
-                                <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="50" />
-                                <TextBlock Text="{Binding Duration}" Width="auto" />
-                                <TextBlock Text="T" />
+                        <DataTemplate >
+
+                            <StackPanel >
+                                <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
+                                    <TextBlock Text="{Binding StartDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text=" - " Width="15" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh\\:mm'}" Width="30" />
+                                    <TextBlock Text="{Binding Duration}" Width="auto" Margin="25 0 0 0" />
+                                    <TextBlock Text="T" />
+
+                                </StackPanel>
+                                <TextBlock Text="Beskeder:" />
+                                <ListBox ItemsSource="{Binding Messages}" MaxHeight="50">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Margin="5" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text=" - " FontSize="10" />
+                                                    <TextBlock Text="{Binding User.FullName}" FontSize="10" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+
+                                            </StackPanel>
+
+
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>

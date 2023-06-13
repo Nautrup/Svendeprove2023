@@ -147,7 +147,8 @@
         
         <!--Workplan item template-->
         <Style x:Key="WorkplanTemplate"  TargetType="ListViewItem">
-            <Setter Property="Height" Value="80" />
+            <Setter Property="Height" Value="150" />
+            <Setter Property="MaxHeight" Value="250" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Background" Value="LightGray" />
             <Setter Property="Template">
@@ -157,7 +158,7 @@
                                 Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
                             <!-- ContentPresenter and other visual elements -->
                             <ContentPresenter  Margin="5" 
-                                               VerticalAlignment="Center"
+                                               VerticalAlignment="Top" 
                                                />
                         </Border>
                     </ControlTemplate>
