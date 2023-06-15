@@ -43,7 +43,9 @@ namespace EmployeeManagement.ViewModel
             {
                 try
                 {
+                    SelectedTimeEntry.User = CurrentLoggedInUser;
                     SelectedTimeEntry.AddComment(NewComment);
+                    
                     GetUserTimeEntries((int)SelectedTimeEntry.UserId);
                 }
                 catch (WebException ex)
@@ -95,9 +97,14 @@ namespace EmployeeManagement.ViewModel
 
             CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
             // Tjekker bruger rettigheder
-            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(1) || CurrentLoggedInUser.UserRole.PermissionIds.Contains(3))
             {
-                ShowCreateShiftButton = false;
+                ShowCreateShiftButton = true;
+            }
+
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(12))
+            {
+                ShowCreateRoleButton = true;
             }
         }
 
@@ -164,8 +171,10 @@ namespace EmployeeManagement.ViewModel
                 if (SelectedUser != null)
                 {
                     GetUserTimeEntries(SelectedUser.ID);                       // Henter stemplinger
-                 
-                    SelectedUser.FirstDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.HiredDate);
+
+                    if (SelectedUser.HiredDate != null)
+                        SelectedUser.FirstDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.HiredDate);
+                    
                     
                     if (SelectedUser.FiredDate != null)
                         SelectedUser.LastDateOfEmployment = UnixConversion.UnixTimeStampToDateTime((long)SelectedUser.FiredDate);
@@ -234,7 +243,8 @@ namespace EmployeeManagement.ViewModel
         }
 
         // holder styr på om brugeren skal have en opet vagt knap visible = true
-        public bool ShowCreateShiftButton { get; set; } = true;
+        public bool ShowCreateShiftButton { get; set; } = false;
+        public bool ShowCreateRoleButton { get; set; } = false;
 
         // holder styr på om vores popup skal vises
         public bool ShowAddLocationsPopUp {
@@ -869,19 +879,19 @@ namespace EmployeeManagement.ViewModel
         }
 
         #region Private Variables
-        private string _roleName;
-        private string _roleDescription;
-        private UserRole _selectedUserRole;
+        
         private bool _showChangeUserRolePopup = false;
         private bool _showAddNewRolePopup = false;
         private bool _showAddCommentPopup = false;
+        private bool _showAddLocationsPopUp;
         private string _newComment;
         private Location _SelectedUserLocation;
         private Location _selectedLocation;
-        private bool _showAddLocationsPopUp;
+        private string _roleName;
+        private string _roleDescription;
+        private UserRole _selectedUserRole;
         private DateTime _currentWeekStartDate;
         private User _selectedUser;
-        private Company _selectedCompany;
         private DateTime _saturdayDate;
         private DateTime _sundayDate;
         private DateTime _fridayDate;

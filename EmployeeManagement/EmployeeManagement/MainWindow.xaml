@@ -26,7 +26,7 @@
                 </Grid.RowDefinitions>
 
                 <!--Button Icon-->
-                <Border Grid.Row="1" Background="#06283D" CornerRadius="0 50 0 30">
+                <Border Grid.Row="1" Background="#363636" CornerRadius="0 50 0 30">
                     <DockPanel>
                         <!--Menu Title-->
                         <TextBlock Text="Velkommen" Foreground="White" FontSize="22" FontWeight="SemiBold"
@@ -76,7 +76,7 @@
                         </StackPanel>
 
                         <!--Log ud-->
-                        <Button Style="{StaticResource MenuButtons}" DockPanel.Dock="Bottom" VerticalAlignment="Bottom"
+                        <Button Style="{StaticResource MenuButtons}" DockPanel.Dock="Bottom" VerticalAlignment="Bottom" Margin="25"
                                  Command="{Binding LogOutCommand}" >
                             <StackPanel Orientation="Horizontal">
                                 <Icon:PackIconMaterial Kind="Logout" Style="{StaticResource menuButtonIcon}"/>

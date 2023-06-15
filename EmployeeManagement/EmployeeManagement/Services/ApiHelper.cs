@@ -16,7 +16,7 @@ namespace EmployeeManagement.Services
 {
     public static class ApiHelper
     {
-        public static string EndPoint = "http://localhost:6969";
+        public static string EndPoint = "http://87.104.76.3:6969/"; //"http://localhost:6969";
 
         public static WebClient Client { get; set; }
         public static string Token { get; set; }
@@ -26,9 +26,10 @@ namespace EmployeeManagement.Services
         {
             Client = new WebClient();
 
-            if (Client.BaseAddress != "http://localhost:6969")
+            if (Client.BaseAddress != "http://87.104.76.3:6969/")
             {
-                EndPoint = "http://localhost:6969";
+            
+                EndPoint = "http://87.104.76.3:6969/";
             }
 
             Client.BaseAddress = EndPoint;

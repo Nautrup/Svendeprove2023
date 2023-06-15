@@ -65,6 +65,7 @@ namespace EmployeeManagement.ViewModel
         // Holder styr på hvilke menuer brugeren skal have vist
         private void ShowMenuDependingOnPermissions()
         {
+            
             // 2 admin
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(1))
             {
@@ -72,16 +73,19 @@ namespace EmployeeManagement.ViewModel
                 ShowEmployeePage = true;
                 ShowTimeStampPage = true;
                 ShowStatisticsPage = true;
-                
+                return;
             }
 
             // 2 see own entries
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
             {
                 ShowWorkPlan = true;
-                ShowEmployeePage = false;
-                ShowTimeStampPage = true;
-                ShowStatisticsPage = true;
+            }
+
+            // 3 Create own entries
+            if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(3))
+            {
+                ShowWorkPlan = true;
             }
         }
 

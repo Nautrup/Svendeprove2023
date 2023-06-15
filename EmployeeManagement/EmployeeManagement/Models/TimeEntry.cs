@@ -29,7 +29,8 @@ namespace EmployeeManagement.Models
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        
+
+        public string Status { get; set; }
         public decimal Duration { get; set; }
         public int? GroupingID { get; set; }
         public List<int> MessageIds { get; set; }
@@ -62,6 +63,7 @@ namespace EmployeeManagement.Models
                     Start = Start,
                     End = End,
                     Duration = Duration,
+                    Status = Status,
                     //GroupingID = GroupingID,
                     //TimeEntryMessage = TimeEntryMessage,
                     TimeEntryTypeId = TimeEntryTypeId,
@@ -86,7 +88,6 @@ namespace EmployeeManagement.Models
         {
             TimeEntryMessage newMessage = new TimeEntryMessage(User, this, UnixConversion.ToUnixTime(DateTime.Today), comment);
             newMessage.Create();
-            
         }
 
         /// <summary>

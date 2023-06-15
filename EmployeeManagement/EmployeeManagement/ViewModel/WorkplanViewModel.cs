@@ -194,6 +194,7 @@ namespace EmployeeManagement.ViewModel
                     End = UnixConversion.ToUnixTime(End),
                     Duration = End.TimeOfDay.Hours - Start.TimeOfDay.Hours,
                     TimeEntryTypeId = SelectedTimeEntryType.ID,
+                    Status = "Standard",
                     LocationId = locationId,
                 };
 

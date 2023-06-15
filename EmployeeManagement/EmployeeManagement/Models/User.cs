@@ -34,32 +34,6 @@ namespace EmployeeManagement.Models
 
         public List<Location> Locations { get; set; }
 
-        public void UpdateTest()
-        {
-            // Api til update
-
-            using (ApiHelper.Client)
-            {
-                User user = new User()
-                {
-                    UserRole = UserRole,
-                    FirstName = FirstName,
-                    MiddleName = MiddleName,
-                    SurName = SurName,
-                    Company = Company,
-                    ProfileImage = ProfileImage,
-                    HiredDate = HiredDate,
-                    FiredDate = FiredDate,
-                    Locations = Locations
-                };
-
-                var jsonData = JsonConvert.SerializeObject(user);
-
-                ApiHelper.Put($"/user/{ID}", jsonData);
-
-            }
-        }
-
         /// <summary>
         /// Opdatere en bruger
         /// </summary>

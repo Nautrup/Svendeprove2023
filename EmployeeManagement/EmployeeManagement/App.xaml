@@ -8,8 +8,8 @@
         
         <!--Menu Button Styling-->
         <Style x:Key="MenuButtons" TargetType="Button">
-            <Setter Property="Background" Value="#06283D" />
-            <Setter Property="Foreground" Value="#47B5FF" />
+            <Setter Property="Background" Value="#3700B3" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Height" Value="35" />
             <Setter Property="Margin" Value="15 3" />
@@ -26,8 +26,8 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#256D85" />
-                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="Background" Value="#BB86FC" />
+                    <Setter Property="FontSize" Value="14" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -42,8 +42,8 @@
 
         <!--Add new memeber button-->
         <Style x:Key="addNewMemeberButton" TargetType="Button">
-            <Setter Property="Background" Value="#256D85" />
-            <Setter Property="Foreground" Value="#DFF6FF" />
+            <Setter Property="Background" Value="#3700B3" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
             <Setter Property="Width" Value="150" />
             <Setter Property="Height" Value="35" />
@@ -63,8 +63,9 @@
 
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#47B5FF" />
+                    <Setter Property="Background" Value="#BB86FC" />
                     <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="14"/>
                 </Trigger>
 
                 <Trigger Property="IsEnabled" Value="False">
