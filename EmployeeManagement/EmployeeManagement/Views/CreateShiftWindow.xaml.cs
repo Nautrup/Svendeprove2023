@@ -22,10 +22,11 @@ namespace EmployeeManagement.Views
     public partial class CreateShiftWindow : Window
     {
         public WorkplanViewModel ViewModel { get; set; }
-        public CreateShiftWindow()
+        public CreateShiftWindow(int selectedLocationId)
         {
             InitializeComponent();
             ViewModel = new WorkplanViewModel();
+            ViewModel.SelectedLocationId = selectedLocationId;
             if (ViewModel.CloseWindowAction == null)
                 ViewModel.CloseWindowAction = new Action(this.Close);
 

@@ -18,13 +18,14 @@ namespace EmployeeManagement.ViewModel
     {
         ExceptionHttpHelper exceptionHttpHelper;
         public EmployeeViewModel EmployeeViewModel { get; set; }
+
         public WorkplanViewModel() 
         {
             EmployeeViewModel = new EmployeeViewModel();
             EmployeeViewModel.SelectedUser = CurrentLoggedInUser;
-            CreateTimeEntryCommand = new RelayCommand(o => CreateEntry(), o => SelectedUser != null );
+            CreateTimeEntryCommand = new RelayCommand(o => CreateEntry(SelectedLocationId), o => SelectedUser != null );
 
-          
+            GetTimeEntryTypes();
 
             if (CurrentLoggedInUser.Locations.Count != 0)
             {
@@ -54,7 +55,7 @@ namespace EmployeeManagement.ViewModel
             set { _selectedUser = value; OnPropertyChanged(nameof(SelectedUser));
             }
         }
-
+        public int SelectedLocationId { get; set; }
         public DateTime Start {
             get { return _start; }
             set { _start = value; OnPropertyChanged(nameof(Start)); }
@@ -160,19 +161,40 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        private void GetTimeEntryTypes()
+        {
+            TimeEntryTypeCollection.Clear();
+
+            try
+            {
+                string response = ApiHelper.Get("/entrytype");
+                List<TimeEntryType> types = JsonConvert.DeserializeObject<List<TimeEntryType>>(response);
+
+                foreach (var type in types)
+                {
+                    TimeEntryTypeCollection.Add(type);
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{(int)exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl");
+            }
+        }
         // Opretter en vagt
-        private void CreateEntry()
+        private void CreateEntry(int locationId)
         {
             try
             {
                 TimeEntry newEntry = new TimeEntry()
                 {
                     UserId = SelectedUser.ID,
-                    Start = UnixConversion.ToUnixTimeMilliSeconds(Start),
-                    End = UnixConversion.ToUnixTimeMilliSeconds(End),
+                    Start = UnixConversion.ToUnixTime(Start),
+                    End = UnixConversion.ToUnixTime(End),
                     Duration = End.TimeOfDay.Hours - Start.TimeOfDay.Hours,
                     TimeEntryTypeId = SelectedTimeEntryType.ID,
-                    LocationId = SelectedUser.Locations[0].ID,
+                    LocationId = locationId,
                 };
 
                 // Opretter en entry og returner den ssom object m/ dens ID.

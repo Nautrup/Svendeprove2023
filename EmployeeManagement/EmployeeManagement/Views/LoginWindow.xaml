@@ -91,7 +91,6 @@
                         Background="Transparent" BorderThickness="0 0 0 3" BorderBrush="DarkGray" 
                          Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" />
 
-
                 <Button Style="{StaticResource addNewMemeberButton}" HorizontalAlignment="Center" 
                         Command="{Binding AuthenticateCommand}">
                     <StackPanel Orientation="Horizontal">

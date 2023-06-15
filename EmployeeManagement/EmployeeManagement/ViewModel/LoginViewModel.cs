@@ -73,10 +73,10 @@ namespace EmployeeManagement.ViewModel
 
                 // laver bruger object til json
                 string? json = JsonConvert.SerializeObject(login);
-                string stream = ApiHelper.Post("/auth/authenticate", json);
+                string authResponse = ApiHelper.Post("/auth/authenticate", json);
 
                 // Henter voress api data
-                ApiAuthenticationData apiData = JsonConvert.DeserializeObject<ApiAuthenticationData>(stream);
+                ApiAuthenticationData apiData = JsonConvert.DeserializeObject<ApiAuthenticationData>(authResponse);
 
                 // Sætter vores Token til at være vores login på medarbejderen
                 ApiHelper.SetToken(apiData.accessToken.token);

@@ -13,34 +13,43 @@
         mc:Ignorable="d"
         BorderThickness="0"
         WindowStyle="ToolWindow"
-        Title="Opret vagt" Height="450" Width="800">
+        Title="Opret vagt" Height="450" Width="500">
 
     <Grid Margin="5 0 5 0">
 
         <StackPanel Width="350">
-            <TextBlock Text="Opret vagt"
+            
+            <TextBlock Text="Opret vagt" Margin="0 10 0 5"
                        FontSize="16" FontWeight="Bold" />
-            <TextBlock Text="Vælg medarbejder:" />
-            <ComboBox ItemsSource="{Binding UserCollection}" DisplayMemberPath="FullName"
-                      SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Text="* påkrævet" Margin="5 0 0 20"
+                       FontSize="12" FontWeight="Light" />
+            <TextBlock Text="Vælg medarbejder*" />
+            <ComboBox ItemsSource="{Binding UserCollection}"
+                      SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel >
+                            <TextBlock Text="{Binding FullName}" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
-            <TextBlock Text="Vælg start tidspunkt:" />
+            <TextBlock Text="Vælg start tidspunkt*" Margin="0 10 0 0" />
             <xctk:DateTimePicker Value="{Binding Start}" Format="Custom" FormatString="dd-MM-yyyy HH:mm:ss" />
 
-            <TextBlock Text="Vælg slut tidspunkt:" />
+            <TextBlock Text="Vælg slut tidspunkt*" Margin="0 10 0 0" />
             <xctk:DateTimePicker  Value="{Binding End}" Format="Custom" FormatString="dd-MM-yyyy HH:mm:ss" />
 
-            <TextBlock Text="Vælg start tidstype:" />
-            <ComboBox
+            <TextBlock Text="Vælg start tidstype*" Margin="0 10 0 0" />
+            <ComboBox ItemsSource="{Binding TimeEntryTypeCollection}"
                       SelectedItem="{Binding SelectedTimeEntryType}"
-                DisplayMemberPath="Name"
-                      >
-                <Models:TimeEntryType ID="1" Name="Normalvagt"/>
-                <Models:TimeEntryType ID="2" Name="Aftenvagt"/>
+                DisplayMemberPath="Name" >
+             
 
             </ComboBox>
 
-            <TextBlock Text="Besked:" />
+            <TextBlock Text="Besked (valgfri)" Margin="0 10 0 0" />
             <TextBox Text="{Binding EntryMessage, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Height="50"  />
 
             <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding CreateTimeEntryCommand}" >

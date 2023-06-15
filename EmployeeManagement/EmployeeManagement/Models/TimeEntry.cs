@@ -16,7 +16,7 @@ namespace EmployeeManagement.Models
 {
     public class TimeEntry
     {
-        public int? ID { get; set; }
+        public int? Id { get; set; }
         
         public User User { get; set; }
 
@@ -96,18 +96,11 @@ namespace EmployeeManagement.Models
         {
             using (ApiHelper.Client)
             {
-                TimeEntry newEntry = new TimeEntry()
-                {
-                    UserId = null,
-                    Start = Start,
-                    End = End,
-                    Duration = Duration,
-                    TimeEntryTypeId = TimeEntryTypeId,
-                    LocationId = LocationId,
-                };
+                TimeEntryPut releaseEntry = new TimeEntryPut(new TimeEntry());
+                releaseEntry.UserId = null;
 
-                var jsonData = JsonConvert.SerializeObject(newEntry);
-                string response = ApiHelper.Put($"/entry/{this.ID}", jsonData);
+                var jsonData = JsonConvert.SerializeObject(releaseEntry);
+                string response = ApiHelper.Put($"/entry/{Id}", jsonData);
                 
             }
         }   

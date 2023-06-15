@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace EmployeeManagement.ViewModel
@@ -30,17 +31,20 @@ namespace EmployeeManagement.ViewModel
             ShowCreateWindowCommand = new RelayCommand(o => ShowCreateWindow()) ;
             FindNextWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(7), o => SelectedUser != null);
             FindLastWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(-7), o => SelectedUser != null);
-            ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => true);
+            ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => SelectedUserLocation != null);
 
-            CancelCommentCommand = new RelayCommand(o => ShowAddCommentPopup = false);
-            ShowAddCommentPopupCommand = new RelayCommand(o => ShowAddCommentPopup = true, o => SelectedTimeEntry != null);
-
+            //New Role popup
+            ShowPopupCreateNewRoleCommand = new RelayCommand(o => { ShowAddNewRolePopup = true; RoleName = string.Empty; RoleDescription = string.Empty; }) ;
+            CreateNewRoleCommand = new RelayCommand(o => CreateNewRole(), o => SelectedPermissions != null && !string.IsNullOrEmpty(RoleName) && !string.IsNullOrEmpty(RoleDescription)) ;
+            CancelCreateRoleCommand = new RelayCommand(o => ShowAddNewRolePopup = false);
+            
+            // Tilføj Lokation Popup
             AddCommentToEntryCommand = new RelayCommand(o => 
             {
                 try
                 {
                     SelectedTimeEntry.AddComment(NewComment);
-
+                    GetUserTimeEntries((int)SelectedTimeEntry.UserId);
                 }
                 catch (WebException ex)
                 {
@@ -57,32 +61,44 @@ namespace EmployeeManagement.ViewModel
                 
             });
             AddLocationToUserCommand = new RelayCommand(o => AddLokationToUser(), o => SelectedUser != null);
+            CancelAddLocationCommand = new RelayCommand(o => ShowAddLocationsPopUp = false, o => true);
+            ShowAddLocationsCommand = new RelayCommand(o => ShowAddNewLocationPopup(), o => SelectedUser != null);
 
             RemoveSelectedUserLocationCommand = new RelayCommand(o => RemoveLocationToUser(), o => SelectedUser != null);
-            ShowAddLocationsCommand = new RelayCommand(o => ShowAddNewLocationPopup(), o => SelectedUser != null);
-            CancelAddLocationCommand = new RelayCommand(o => ShowAddLocationsPopUp = false, o => true);
             DeleteUserCommand = new RelayCommand(o => SelectedTimeEntry.ReleaseEntry(), o => SelectedTimeEntry != null);
-            
-            ReleaseTimeEntryCommand = new RelayCommand(o => SelectedTimeEntry.ReleaseEntry(), o => SelectedTimeEntry != null); ;
-         
-            LoadLocations();
-            
-            CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
 
+            // Tilføj kommentar popup
+            ShowAddCommentPopupCommand = new RelayCommand(o => ShowAddCommentPopup = true, o => SelectedTimeEntry != null);
+            CancelCommentCommand = new RelayCommand(o => { ShowAddCommentPopup = false; ShowAddNewRolePopup = false; ShowAddLocationsPopUp = false; ShowChangeUserRolePopup = false; });
+            
+            // Skift rolle poup
+            ChangeRoleCommand = new RelayCommand(o => { UpdateUserInformation(SelectedUser); ShowChangeUserRolePopup = false; }, o => SelectedUser != null);
+            ShowChangeRolePopupCommand = new RelayCommand(o => ShowChangeUserRolePopup = true);
+            
+            ReleaseTimeEntryCommand = new RelayCommand(o => 
+            {
+                try
+                {
+                    SelectedTimeEntry.ReleaseEntry();
+                }
+                catch (WebException ex)
+                {
+                    exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                    MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}\nTimeEntry id:{SelectedTimeEntry.Id}", "Fejl opstået");
+                }
+                
+            }, o => SelectedTimeEntry != null);
+         
+            LoadLocations(); //  Henter Lokationer
+            LoadRolePermissions(); // Henter roller
+
+            CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
+            // Tjekker bruger rettigheder
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(2))
             {
                 ShowCreateShiftButton = false;
             }
-        }
-
-
-        // holder styr på om brugeren skal have en opet vagt knap visible = true
-        public bool ShowCreateShiftButton { get; set; } = true;
-       
-        // holder styr på om vores popup skal vises
-        public bool ShowAddLocationsPopUp {
-            get { return _showAddLocationsPopUp; }
-            set { _showAddLocationsPopUp = value; OnPropertyChanged(nameof(ShowAddLocationsPopUp)); }
         }
 
         #region Icommands
@@ -98,10 +114,15 @@ namespace EmployeeManagement.ViewModel
         public ICommand RemoveSelectedUserLocationCommand { get; set; }
         public ICommand AddCommentToEntryCommand { get; set; }
         public ICommand ShowAddCommentPopupCommand { get; set; }
+        public ICommand ShowPopupCreateNewRoleCommand { get; set; }
+        public ICommand CreateNewRoleCommand { get; set; }
+        public ICommand CancelCreateRoleCommand { get; set; }
         public ICommand CancelCommentCommand { get; set; }
         public ICommand ShowAddLocationsCommand { get; set; }
         public ICommand AddLocationToUserCommand { get; set; }
         public ICommand CancelAddLocationCommand { get; set; }
+        public ICommand ChangeRoleCommand { get; set; }
+        public ICommand ShowChangeRolePopupCommand { get; set; }
         #endregion
 
         // Nuværende uges mandags dato
@@ -117,6 +138,20 @@ namespace EmployeeManagement.ViewModel
                 OnPropertyChanged(nameof(CurrentWeekStartDate));
             }
         }
+
+        // Valgte roller
+        private UserRolePermission _selectedPermissions;
+
+        // Valge bruger adgang til rolle
+        public UserRolePermission SelectedPermissions {
+            get { return _selectedPermissions; }
+            set 
+            { 
+                _selectedPermissions = value;  
+                OnPropertyChanged(nameof(SelectedPermissions)); 
+            }
+        }
+
 
         // Valgte bruger
         public User SelectedUser
@@ -172,6 +207,16 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Valgte brugers rolle (change)
+
+        public UserRole SelectedUserRole {
+            get { return _selectedUserRole; }
+            set { 
+                _selectedUserRole = value; OnPropertyChanged(nameof(SelectedUserRole));
+            }
+        }
+
+
         // Vores text vi tilføjeer til en timeEntry
         public string NewComment {
             get { return _newComment; }
@@ -188,6 +233,54 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // holder styr på om brugeren skal have en opet vagt knap visible = true
+        public bool ShowCreateShiftButton { get; set; } = true;
+
+        // holder styr på om vores popup skal vises
+        public bool ShowAddLocationsPopUp {
+            get { return _showAddLocationsPopUp; }
+            set { _showAddLocationsPopUp = value; OnPropertyChanged(nameof(ShowAddLocationsPopUp)); }
+        }
+
+        // Holder styr på om vi skal se popup med opretteelse af roller
+        public bool ShowAddNewRolePopup {
+            get { return _showAddNewRolePopup; }
+            set
+            {
+                _showAddNewRolePopup = value; OnPropertyChanged(nameof(ShowAddNewRolePopup));
+            }
+        }
+
+        // Holder styr på om popup for at ændre en brugeres rolle skal vises
+        
+        public bool ShowChangeUserRolePopup {
+            get { return _showChangeUserRolePopup; }
+            set 
+            {
+                _showChangeUserRolePopup = value;
+                if (value == true)
+                {
+                    LoadUserRoles();
+                }
+                OnPropertyChanged(nameof(ShowChangeUserRolePopup));
+            }
+        }
+
+
+        // Rolle navn ved oprettelse
+        public string RoleName {
+            get { return _roleName; }
+            set { _roleName = value; OnPropertyChanged(nameof(RoleName)); }
+        }
+
+        // Rolle beskrivelse ved oprettelse
+        public string RoleDescription {
+            get { return _roleDescription; }
+            set { _roleDescription = value; OnPropertyChanged(nameof(RoleDescription));
+            }
+        }
+
+
 
         #region ObservableCollectiions
         public ObservableCollection<User> UserCollection { get; set; } = new();
@@ -199,6 +292,8 @@ namespace EmployeeManagement.ViewModel
         public ObservableCollection<TimeEntry> TimeEntriesCollection { get; set; } = new();
 
         public ObservableCollection<UserRole> UserRoleCollection { get; set; } = new();
+
+        public ObservableCollection<UserRolePermission> PermissionsRollection { get; set; } = new();
 
         public ObservableCollection<TimeEntry> MondayTimeEntriesCollection { get; set; } = new();
         public ObservableCollection<TimeEntry> TuesdayTimeEntriesCollection { get; set; } = new();
@@ -288,7 +383,7 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
-
+        // Henter bruger på ID
         private User RetrieveUserById(int userId)
         {
             try
@@ -310,7 +405,6 @@ namespace EmployeeManagement.ViewModel
             }
         }
    
-
         // henter brugers rollr
         private UserRole GetUserRole(int userID)
         {
@@ -433,7 +527,7 @@ namespace EmployeeManagement.ViewModel
 
                         entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start); // entry.StartDate.AddSeconds(entry.Start);
                         entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
-                        entry.Messages = GetTimeEntryMessages(entry.ID);
+                        entry.Messages = GetTimeEntryMessages(entry.Id);
                        
                         DayOfWeek day = entry.StartDate.DayOfWeek;
 
@@ -532,6 +626,33 @@ namespace EmployeeManagement.ViewModel
             }
         }
 
+        // Henter adgange for roller
+        private void LoadRolePermissions()
+        {
+            try
+            {
+                PermissionsRollection.Clear();
+
+                using (ApiHelper.Client)
+                {
+                    string json = ApiHelper.Get($"/roles/permission");
+
+                    
+                    foreach (var role in JsonConvert.DeserializeObject<List<UserRolePermission>>(json))
+                    {
+                        PermissionsRollection.Add(role);
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            }
+        }
+
         // Henter alle lokationer
         private void LoadLocations()
         {
@@ -548,7 +669,57 @@ namespace EmployeeManagement.ViewModel
 
         }
 
+        // Henter alle roller
+        private void LoadUserRoles()
+        {
+            try
+            {
+                UserRoleCollection.Clear();
+
+                string jsonResponse = ApiHelper.Get("/role");
+
+                foreach (var role in JsonConvert.DeserializeObject<List<UserRole>>(jsonResponse)) 
+                {
+                    UserRoleCollection.Add(role);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         #endregion
+
+        // Oprette ny rolle 
+        private void CreateNewRole()
+        {
+            try
+            {
+                UserRole neweRole = new UserRole();
+                neweRole.Name = RoleName;
+                neweRole.Description = RoleDescription;
+                neweRole.PermissionIds = new List<int>()
+                {
+                    SelectedPermissions.ID
+                };
+
+                neweRole.Create();
+
+                // Fjerner popup igen
+                ShowAddNewRolePopup = false;
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", "Fejl opstået");
+            } catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}", "Fejl opstået");
+            }
+        }
 
         #region API Put 
         // Opdatere en brugers information
@@ -557,7 +728,10 @@ namespace EmployeeManagement.ViewModel
             try
             {
                 UserCreate updateUser = new UserCreate();
-
+                if (SelectedUserRole != null)
+                {
+                    selectedUser.UserRole = SelectedUserRole;
+                }
                 updateUser.Update(selectedUser);
                 // Henter brugere igen
                 GetUsers();
@@ -623,11 +797,13 @@ namespace EmployeeManagement.ViewModel
             {
                 User temp = SelectedUser;
 
-                CreateShiftWindow createShift = new CreateShiftWindow();
+                CreateShiftWindow createShift = new CreateShiftWindow(SelectedUserLocation.ID);
             
                 createShift.ShowDialog();
 
-                GetUserTimeEntries(temp.ID);
+                if (temp != null)
+                    GetUserTimeEntries(temp.ID);
+                
             }
             catch (Exception ex)
             {
@@ -693,6 +869,11 @@ namespace EmployeeManagement.ViewModel
         }
 
         #region Private Variables
+        private string _roleName;
+        private string _roleDescription;
+        private UserRole _selectedUserRole;
+        private bool _showChangeUserRolePopup = false;
+        private bool _showAddNewRolePopup = false;
         private bool _showAddCommentPopup = false;
         private string _newComment;
         private Location _SelectedUserLocation;

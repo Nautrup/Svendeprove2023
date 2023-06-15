@@ -43,7 +43,7 @@ namespace EmployeeManagement.Models
 
                 var jsonData = JsonConvert.SerializeObject(this);
 
-                ApiHelper.Post($"/entry/{TimeEntry.ID}/messages", jsonData);
+                ApiHelper.Post($"/entry/{TimeEntry.Id}/messages", jsonData);
 
             }
         }

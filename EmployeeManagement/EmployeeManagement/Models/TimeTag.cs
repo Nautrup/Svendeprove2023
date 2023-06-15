@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Models
 {
-    public class UserRolePermission
+    public class TimeTag
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public string Descriptions { get; set; }
+        public decimal Number { get; set; }
+        public List<int> RuleIds { get; set; }
 
-        public bool IsChecked { get; set; }
     }
 }

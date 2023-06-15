@@ -22,7 +22,7 @@ namespace EmployeeManagement.ViewModel
 
         public EmployeeTimeEntryViewModel()
         {
-            LoadTimeEntryTypes();
+            LoadTimeEntryTypes(CurrentLoggedInUser.Company.ID);
            
             LoadTimeEntries(DUMMYTESTLOCATIONID);
         }
@@ -130,7 +130,7 @@ namespace EmployeeManagement.ViewModel
                     {
                         entry.StartDate = UnixConversion.UnixTimeStampToDateTime(entry.Start);
                         entry.EndDate = UnixConversion.UnixTimeStampToDateTime(entry.End);
-                        entry.Messages = GetMessages(entry.ID);
+                        entry.Messages = GetMessages(entry.Id);
                         
                         if (entry.StartDate.Date == CurrentDate.Date)
                         {
@@ -152,13 +152,31 @@ namespace EmployeeManagement.ViewModel
         }
 
         // Henter vores TimeEntryTypes
-        private void LoadTimeEntryTypes()
+        private void LoadTimeEntryTypes(int companyId)
         {
+            // rydder kollektionen
             TimeEntryTypeCollection.Clear();
-
-            foreach (var type in TimeEntyService.GetEntryTypes())
+            try
             {
-                TimeEntryTypeCollection.Add(type);
+                // Henter json svar fra api
+                string response = ApiHelper.Get($"/entryType");
+
+                if (!string.IsNullOrEmpty(response))
+                {
+                    // laver json svar om til c# object
+                    List<TimeEntryType> types = JsonConvert.DeserializeObject<List<TimeEntryType>>(response);
+                    // Looper gennem dem og tilføjet til kollektionen
+                    foreach (var type in types) // old TimeEntyService.GetEntryTypes())
+                    {
+                        TimeEntryTypeCollection.Add(type);
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                exceptionHttpHelper = new ExceptionHttpHelper(ex);
+                
+                MessageBox.Show($"{exceptionHttpHelper.StatusCode}\n{exceptionHttpHelper.StatusDescription}\n\n{exceptionHttpHelper.ErrorMessage}", $"Fejl opstået");
             }
         }
 

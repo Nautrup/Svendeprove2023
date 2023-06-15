@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks"
       xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel" 
-      xmlns:components="clr-namespace:EmployeeManagement.Components"
+      xmlns:components="clr-namespace:EmployeeManagement.Components" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
       d:DataContext="{d:DesignInstance Type=viewmodel:EmployeeViewModel}"
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="EmployeePage">
@@ -85,37 +85,130 @@
                 <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
 
+
             <StackPanel Grid.Row="1" Grid.Column="1">
-                
-                <TextBlock Text="Vælg lokation:" FontSize="24" FontWeight="SemiBold" 
-                           HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 5 0" />
+
+                <TextBlock Text="{Binding CurrentLoggedInUser.Company.Name}"
+                               FontSize="18" FontWeight="SemiBold" Grid.Column="1" />
+
+                <TextBlock Text="Vælg lokation" FontSize="14" FontWeight="SemiBold" />
+
+
+
                 <ComboBox ItemsSource="{Binding CurrentLoggedInUser.Locations}" DisplayMemberPath="Name"
-                          SelectedIndex="0" IsSynchronizedWithCurrentItem="True"
+                         
+                          SelectedIndex="0"
                           SelectedItem="{Binding SelectedUserLocation}" />
 
             </StackPanel>
 
+            <Grid Grid.Column="2">
+
+            </Grid>
+
+            <!--Actions-->
 
             <Grid Grid.Row="1" Grid.Column="2">
+                <!--Opret rolle popup-->
+                <Popup IsOpen="{Binding ShowAddNewRolePopup}" PopupAnimation="Fade" Placement="Mouse"
+                       Width="250" Height="auto" AllowsTransparency="True" >
+                    <Border Background="LightBlue" CornerRadius="15"  >
+                        <StackPanel Margin="10" >
+                            <TextBlock Text="Opret rolle" FontSize="16" FontWeight="Bold"
+                                       Margin="0 0 0 10" />
+                            <TextBlock Text="* påkrævet" Margin="5 -5 0 5"
+                                       FontSize="12" FontWeight="Light" />
+                            <TextBlock Text="Navn*" />
+                            <xctk:WatermarkTextBox Watermark="Indtast navn for rolle her..."
+                                                   Text="{Binding RoleName, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
 
-                <Button 
-                                            Style="{StaticResource addNewMemeberButton}"  Width="150"
-                                        Visibility="{Binding ShowCreateShiftButton, Converter={StaticResource BoolToVis}}"
-                                            VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 0 0 5"
-                                            Command="{Binding ShowCreateWorkplanCommand }"  Grid.Column="1" >
-                    <StackPanel Orientation="Horizontal">
-                        <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
-                        <TextBlock Text="Opret vagt" />
-                    </StackPanel>
-                </Button>
+                            <TextBlock Text="Beskrivelse*" />
+                            <xctk:WatermarkTextBox Watermark="Beskriv rolle her..."
+                                                   Height="50"
+                                                   Text="{Binding RoleDescription, UpdateSourceTrigger=PropertyChanged}"
+                                                   />
+
+                            <TextBlock Text="Adgange til rolle*" />
+
+                            <ComboBox ItemsSource="{Binding PermissionsRollection}"
+                                      DisplayMemberPath="Name"
+                                      SelectedIndex="0"
+                                      SelectedItem="{Binding SelectedPermissions}" />
+
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                                <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,50,0" Grid.Column="2"
+                                                        Command="{Binding CancelCreateRoleCommand}"
+                                                            HorizontalAlignment="Left"
+                                                        Width="80" Height="25">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Icon:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" 
+                                                       Margin="0 0 2 0"
+                                                       Width="12" Height="12" />
+                                        <TextBlock Text=" Fortryd" />
+                                    </StackPanel>
+                                </Button>
+
+
+                                <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,5,0" Grid.Column="2"
+                                                    Command="{Binding CreateNewRoleCommand}"
+                                                    
+                                                    Width="80" Height="25">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" 
+                                                   Margin="0 0 2 0"
+                                                   Width="12" Height="12" />
+                                        <TextBlock Text=" Tilføj rolle" />
+                                    </StackPanel>
+                                </Button>
+
+
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <!--Vagt-->
+                    <Button 
+                        Style="{StaticResource addNewMemeberButton}"  Width="150"
+                        Visibility="{Binding ShowCreateShiftButton, Converter={StaticResource BoolToVis}}"
+                        VerticalAlignment="Center"  Margin="0 0 0 5"
+                        Command="{Binding ShowCreateWorkplanCommand }"  Grid.Column="1" >
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="Plus" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Opret vagt" />
+                        </StackPanel>
+                    </Button>
+
+                    <!--Rolle-->
+                    <Button 
+                        Style="{StaticResource addNewMemeberButton}"  Width="150"
+                        VerticalAlignment="Center"  Margin="5 0 0 5"
+                        Command="{Binding ShowPopupCreateNewRoleCommand, UpdateSourceTrigger=PropertyChanged}"  Grid.Column="1" >
+                        <StackPanel Orientation="Horizontal">
+                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                            <TextBlock Text="Opret rolle" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </Grid>
 
         <!--Medarbejdere liste-->
         <Grid Grid.Column="1" Grid.Row="2">
-            <ListView ItemsSource="{Binding UserCollection}" DisplayMemberPath="FullName"
+            <ListView ItemsSource="{Binding UserCollection}"
                       SelectedItem="{Binding SelectedUser}" SelectionMode="Single" >
 
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel  Orientation="Horizontal" >
+
+                            <TextBlock Text="{Binding FullName}" Padding="0 5 0 5" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
             </ListView>
         </Grid>
 
@@ -202,15 +295,15 @@
                                               Height="50" >
 
                                     </ListBox>
-                                    
+
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
                                             Command="{Binding ShowAddLocationsCommand}"
                                             Width="50" Height="25">
                                         <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
+                                            <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
-                                    
+
                                     <!--Fjern lokation-->
 
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="3"
@@ -222,9 +315,10 @@
                                         </StackPanel>
                                     </Button>
 
-                                    
+
                                     <!--POPUP FOR AT TILFØJE LOKATION TIL BRUGER-->
-                                    <Popup Visibility="{Binding AddLocationToUserCommand, Converter={StaticResource BoolToVis}}" Grid.Column="4" IsOpen="{Binding  ShowAddLocationsPopUp}"
+                                    <Popup Visibility="{Binding AddLocationToUserCommand, Converter={StaticResource BoolToVis}}" 
+                                           Grid.Column="4" IsOpen="{Binding  ShowAddLocationsPopUp}"
                                            Margin="25 25"
                                            Width="250" Height="150" AllowsTransparency="True" >
                                         <Border Background="LightBlue" CornerRadius="15"  >
@@ -241,7 +335,7 @@
 
 
                                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                                    
+
                                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,50,0" Grid.Column="2"
                                                     Command="{Binding CancelAddLocationCommand}"
                                                         HorizontalAlignment="Left"
@@ -259,21 +353,21 @@
                                                 Command="{Binding AddLocationToUserCommand}"
                                                     
                                                 Width="80" Height="25">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" 
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" 
                                                Margin="0 0 2 0"
                                                Width="12" Height="12" />
-                                                        <TextBlock Text=" Tilføj" />
-                                                    </StackPanel>
-                                                </Button>
+                                                            <TextBlock Text=" Tilføj" />
+                                                        </StackPanel>
+                                                    </Button>
 
-                                                    
+
                                                 </StackPanel>
 
                                             </StackPanel>
                                         </Border>
                                     </Popup>
-                                    
+
                                 </Grid>
 
 
@@ -284,19 +378,74 @@
                                         <ColumnDefinition Width="150"/>
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition Width="9*"/>
+                                        <ColumnDefinition Width="61*"/>
                                     </Grid.ColumnDefinitions>
-                                    
+
                                     <TextBlock Text="Roller:" VerticalAlignment="Center" />
-                                    
+
                                     <TextBlock Text="{Binding SelectedUser.UserRole.Name}" Grid.Column="1" />
-                                   
-                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
-                                            Width="50" Height="25">
+
+                                    <Button Style="{StaticResource addNewMemeberButton}" 
+                                            Command="{Binding ShowChangeRolePopupCommand}"
+                                            Margin="5,0,0,0" Grid.Column="2"
+                                            Width="50" Height="25" HorizontalAlignment="Left">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
 
+                                    <!--Skift rolle popup-->
+                                    <Popup IsOpen="{Binding ShowChangeUserRolePopup}" PopupAnimation="Fade" Placement="Mouse"
+                                             Width="250" Height="auto" Grid.ColumnSpan="2" >
+                                        <Border Background="AliceBlue" BorderThickness="1" BorderBrush="Black" >
+                                            <StackPanel Margin="10" >
+                                                <TextBlock Text="Ændre rolle" FontSize="16" FontWeight="Bold"
+                                                    Margin="0 0 0 10" />
+
+                                                <TextBlock Text="Nuværende: " />
+
+                                                <TextBlock Text="{Binding SelectedUser.UserRole.Name}" />
+
+
+                                                <TextBlock Text="Ændres til *" Margin="0 5 0 5" />
+                                                <ComboBox ItemsSource="{Binding UserRoleCollection}"
+                                                          DisplayMemberPath="Name"
+                                                          SelectedIndex="0"
+                                                          SelectedItem="{Binding SelectedUserRole, UpdateSourceTrigger=PropertyChanged}" />
+
+                                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,50,0" Grid.Column="2"
+                                                        Command="{Binding CancelCommentCommand}"
+                                                            HorizontalAlignment="Left"
+                                                        Width="80" Height="25">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" 
+                                                       Margin="0 0 2 0"
+                                                       Width="12" Height="12" />
+                                                            <TextBlock Text=" Fortryd" />
+                                                        </StackPanel>
+                                                    </Button>
+
+
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,5,0" Grid.Column="2"
+                                                    Command="{Binding ChangeRoleCommand}"
+                                                    
+                                                    Width="80" Height="25">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="ContentSave" VerticalAlignment="Center" 
+                                                   Margin="0 0 2 0"
+                                                   Width="12" Height="12" />
+                                                            <TextBlock Text=" Gem" />
+                                                        </StackPanel>
+                                                    </Button>
+
+
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
 
 
                                 </Grid>
@@ -316,7 +465,7 @@
                                                 <Image Width="150" Height="150" 
                                                         >
 
-                                            </Image>
+                                                </Image>
                                             </Border>
                                         </Grid>
 
@@ -363,22 +512,22 @@
 
                             </Grid>
 
-                          
+
                         </Grid>
                     </TabItem>
 
                     <!--Vagtplan-->
                     <TabItem Header="Vagtplan" Width="120" >
-                        
+
                         <components:EmployeeWorkplanView  DataContext="{Binding }"/>
-                        
-                        
+
+
                     </TabItem>
 
                 </TabControl>
             </Grid>
 
-            
+
 
 
         </Grid>

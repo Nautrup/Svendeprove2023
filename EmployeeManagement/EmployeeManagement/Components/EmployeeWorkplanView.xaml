@@ -60,8 +60,8 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Button 
-                                            Style="{StaticResource addNewMemeberButton}" Width="250"
-                                            VerticalAlignment="Center" Margin="0 0 0 5"
+                                            Style="{StaticResource addNewMemeberButton}" Width="150"
+                                            VerticalAlignment="Center" Margin="0 0 5 5"
                                             Command="{Binding FindLastWeekWorkplanCommand}"  Grid.Column="0" >
                     <StackPanel Orientation="Horizontal">
                         <Icon:PackIconMaterial Kind="ArrowLeft" VerticalAlignment="Center" Width="25" Height="25" Margin="0 1 8 0" />
@@ -69,7 +69,7 @@
                     </StackPanel>
                 </Button>
                 <Button
-                                            Style="{StaticResource addNewMemeberButton}" Width="250"
+                                            Style="{StaticResource addNewMemeberButton}" Width="150"
                                             VerticalAlignment="Center" Margin="0 0 0 5"
                                             Command="{Binding FindNextWeekWorkplanCommand}"  Grid.Column="1">
                     <StackPanel Orientation="Horizontal">
@@ -135,8 +135,16 @@
 
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
                     
@@ -153,7 +161,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" MaxHeight="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -203,8 +211,16 @@
 
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -222,7 +238,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -270,11 +286,18 @@
 
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
-
                     <ListView.ItemTemplate>
                         <DataTemplate >
 
@@ -289,7 +312,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -334,13 +357,21 @@
                 <ListView ItemsSource="{Binding ThursdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
                           SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}" >
 
-
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
+                    
                     <ListView.ItemTemplate>
                         <DataTemplate >
 
@@ -355,7 +386,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -401,8 +432,16 @@
 
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -420,7 +459,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -465,11 +504,18 @@
                 <ListView ItemsSource="{Binding SaturdayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
                           SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
 
-
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
 
@@ -487,7 +533,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
@@ -531,11 +577,18 @@
             <Grid Grid.Row="1">
                 <ListView ItemsSource="{Binding SundayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
                           SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
-
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}" />
-                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}" />
+                            <MenuItem Header="Frigiv vagt" Command="{Binding ReleaseTimeEntryCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CardRemoveOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Angiv kommentar" Command="{Binding ShowAddCommentPopupCommand}">
+                                <MenuItem.Icon>
+                                    <Icon:PackIconMaterial Kind="CommentTextOutline" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
                     <ListView.ItemTemplate>
@@ -552,7 +605,7 @@
                                 </StackPanel>
                                 <TextBlock Text="Beskeder:" />
 
-                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="500" >
+                                <ListBox ItemsSource="{Binding Messages}" Width="auto" Height="100" >
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="5" >

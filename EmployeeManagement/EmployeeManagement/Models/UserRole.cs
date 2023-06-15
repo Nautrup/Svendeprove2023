@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EmployeeManagement.Services;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +14,14 @@ namespace EmployeeManagement.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public List<int> PermissionIds { get; set; }
+        public void Create()
+        {
+            using (ApiHelper.Client)
+            {
+                string jsonData = JsonConvert.SerializeObject(this);
+
+                string postResponse = ApiHelper.Post("/role", jsonData);
+            }
+        }
     }
 }

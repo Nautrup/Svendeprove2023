@@ -212,7 +212,7 @@
 
                                 <StackPanel Grid.Row="1" Grid.Column="1">
                                     <TextBlock Text="Fyraften:" FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding EndDate.Date}" />
+                                    <TextBlock Text="{Binding EndDate, StringFormat='hh:mm'}" />
                                 </StackPanel>
 
                                 <Button Style="{StaticResource addNewMemeberButton}" Command="{Binding ClockOutUserCommand }"
