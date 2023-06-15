@@ -300,7 +300,7 @@
                                             Command="{Binding ShowAddLocationsCommand}"
                                             Width="50" Height="25">
                                         <StackPanel Orientation="Horizontal">
-                                            <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
+                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
 
@@ -368,6 +368,8 @@
                                         </Border>
                                     </Popup>
 
+                             
+
                                 </Grid>
 
 
@@ -386,12 +388,23 @@
 
                                     <TextBlock Text="{Binding SelectedUser.UserRole.Name}" Grid.Column="1" />
 
+                                    <!--Skift rolle-->
                                     <Button Style="{StaticResource addNewMemeberButton}" 
                                             Command="{Binding ShowChangeRolePopupCommand}"
                                             Margin="5,0,0,0" Grid.Column="2"
                                             Width="50" Height="25" HorizontalAlignment="Left">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
+                                        </StackPanel>
+                                    </Button>
+
+                                    <!--Tilføj permission ShowAddPermissionPopupCommand-->
+                                    <Button Style="{StaticResource addNewMemeberButton}" 
+                                            Command="{Binding ShowAddPermissionPopupCommand, UpdateSourceTrigger=PropertyChanged}"
+                                            Margin="5,0,0,0" Grid.Column="3"
+                                            Width="50" Height="25" HorizontalAlignment="Left">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
                                     </Button>
 
@@ -447,7 +460,65 @@
                                         </Border>
                                     </Popup>
 
+                                    <!--POPUP FOR AT TILFØJE PERMISSION TIL ROLLE-->
+                                    <Popup IsOpen="{Binding ShowAddRolePermissionPopup}" PopupAnimation="Fade" Placement="Mouse"
+                                             Width="250" Height="auto" Grid.ColumnSpan="2" >
+                                        <Border Background="LightBlue" CornerRadius="15"  >
+                                            <StackPanel Grid.Column="4" Margin="10" >
+                                                <TextBlock Text="Vælg rolle rettighed"
+                                                           FontSize="14" FontWeight="Bold"
+                                                           Grid.ColumnSpan="3"/>
 
+                                                <ComboBox ItemsSource="{Binding UserRoleCollection}" DisplayMemberPath="Name"  Grid.Column="0"
+                                                  SelectedValue="{Binding SelectedUserRole}"
+                                                  Height="25" Margin="0 15 0 0" >
+
+                                                </ComboBox>
+
+                                                <TextBlock Text="Tilføj rettighed"
+                                                           FontSize="14" FontWeight="Bold"
+                                                           Grid.ColumnSpan="3"/>
+
+                                                <ComboBox ItemsSource="{Binding PermissionsRollection}" DisplayMemberPath="Name"  Grid.Column="0"
+                                                  SelectedValue="{Binding SelectedPermission}"
+                                                  Height="25" Margin="0 15 0 0" >
+
+                                                </ComboBox>
+
+
+                                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,50,0" Grid.Column="2"
+                                                    Command="{Binding CancelCommentCommand}"
+                                                        HorizontalAlignment="Left"
+                                                    Width="80" Height="25">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="Cancel" VerticalAlignment="Center" 
+                                                   Margin="0 0 2 0"
+                                                   Width="12" Height="12" />
+                                                            <TextBlock Text=" Fortryd" />
+                                                        </StackPanel>
+                                                    </Button>
+
+
+                                                    <Button Style="{StaticResource addNewMemeberButton}" Margin="5,20,5,0" Grid.Column="2"
+                                                Command="{Binding AddPermissionCommand}"
+                                                    
+                                                Width="80" Height="25">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" 
+                                               Margin="0 0 2 0"
+                                               Width="12" Height="12" />
+                                                            <TextBlock Text=" Tilføj" />
+                                                        </StackPanel>
+                                                    </Button>
+
+
+                                                </StackPanel>
+
+                                            </StackPanel>
+                                        </Border>
+                                    </Popup>
                                 </Grid>
 
                                 <!--Billede-->

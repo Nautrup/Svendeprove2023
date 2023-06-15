@@ -69,9 +69,13 @@ namespace EmployeeManagement.ViewModel
             RemoveSelectedUserLocationCommand = new RelayCommand(o => RemoveLocationToUser(), o => SelectedUser != null);
             DeleteUserCommand = new RelayCommand(o => SelectedTimeEntry.ReleaseEntry(), o => SelectedTimeEntry != null);
 
+            // Tilføj permission til rolle
+            ShowAddPermissionPopupCommand = new RelayCommand(o => { ShowAddRolePermissionPopup = true; LoadUserRoles(); }, o => true);
+            AddPermissionCommand = new RelayCommand(o => { SelectedUserRole.AddPermission(SelectedPermission.ID); ShowAddRolePermissionPopup = false; }, o => SelectedPermission != null);
+            
             // Tilføj kommentar popup
             ShowAddCommentPopupCommand = new RelayCommand(o => ShowAddCommentPopup = true, o => SelectedTimeEntry != null);
-            CancelCommentCommand = new RelayCommand(o => { ShowAddCommentPopup = false; ShowAddNewRolePopup = false; ShowAddLocationsPopUp = false; ShowChangeUserRolePopup = false; });
+            CancelCommentCommand = new RelayCommand(o => { ShowAddCommentPopup = false; ShowAddNewRolePopup = false; ShowAddLocationsPopUp = false; ShowChangeUserRolePopup = false; ShowAddRolePermissionPopup = false; });
             
             // Skift rolle poup
             ChangeRoleCommand = new RelayCommand(o => { UpdateUserInformation(SelectedUser); ShowChangeUserRolePopup = false; }, o => SelectedUser != null);
@@ -117,19 +121,27 @@ namespace EmployeeManagement.ViewModel
         public ICommand DeleteUserCommand { get; set; }
         public ICommand ShowCreateWorkplanCommand { get; set; }
         public ICommand ReleaseTimeEntryCommand { get; set; }
-        // Pop up
-        public ICommand RemoveSelectedUserLocationCommand { get; set; }
+        
+        // Permission popup
+        public ICommand AddPermissionCommand { get; set; }
+        public ICommand ShowAddPermissionPopupCommand { get; set; }
+        
+        // Comment popup
         public ICommand AddCommentToEntryCommand { get; set; }
         public ICommand ShowAddCommentPopupCommand { get; set; }
+        // Create new role poup
         public ICommand ShowPopupCreateNewRoleCommand { get; set; }
         public ICommand CreateNewRoleCommand { get; set; }
         public ICommand CancelCreateRoleCommand { get; set; }
         public ICommand CancelCommentCommand { get; set; }
+        // add location popup
         public ICommand ShowAddLocationsCommand { get; set; }
         public ICommand AddLocationToUserCommand { get; set; }
         public ICommand CancelAddLocationCommand { get; set; }
         public ICommand ChangeRoleCommand { get; set; }
+        // Change role popup
         public ICommand ShowChangeRolePopupCommand { get; set; }
+        public ICommand RemoveSelectedUserLocationCommand { get; set; }
         #endregion
 
         // Nuværende uges mandags dato
@@ -144,6 +156,14 @@ namespace EmployeeManagement.ViewModel
                 }
                 OnPropertyChanged(nameof(CurrentWeekStartDate));
             }
+        }
+
+        // Valgte permission
+       
+
+        public UserRolePermission SelectedPermission {
+            get { return _selectedPermission; }
+            set { _selectedPermission = value; OnPropertyChanged(nameof(SelectedPermission)); }
         }
 
         // Valgte roller
@@ -275,6 +295,15 @@ namespace EmployeeManagement.ViewModel
                 OnPropertyChanged(nameof(ShowChangeUserRolePopup));
             }
         }
+
+        
+
+        // Holder styr på om vi skal vise popup til at tilføje flere permission til en roller
+        public bool ShowAddRolePermissionPopup {
+            get { return _showAddRolePermissionPopup; }
+            set { _showAddRolePermissionPopup = value; OnPropertyChanged(nameof(ShowAddRolePermissionPopup)); }
+        }
+
 
 
         // Rolle navn ved oprettelse
@@ -879,7 +908,8 @@ namespace EmployeeManagement.ViewModel
         }
 
         #region Private Variables
-        
+        private UserRolePermission _selectedPermission;
+        private bool _showAddRolePermissionPopup = false;
         private bool _showChangeUserRolePopup = false;
         private bool _showAddNewRolePopup = false;
         private bool _showAddCommentPopup = false;

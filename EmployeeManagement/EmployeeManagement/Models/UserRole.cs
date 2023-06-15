@@ -23,5 +23,15 @@ namespace EmployeeManagement.Models
                 string postResponse = ApiHelper.Post("/role", jsonData);
             }
         }
+
+        public void AddPermission(int selectedPermissionId)
+        {
+            using (ApiHelper.Client)
+            {
+                string jsonData = JsonConvert.SerializeObject(this);
+
+                string postResponse = ApiHelper.Post($"/role/{Id}/permission/{selectedPermissionId}", jsonData);
+            }
+        }
     }
 }
