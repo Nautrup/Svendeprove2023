@@ -103,8 +103,8 @@ namespace EmployeeManagement.ViewModel
         #endregion
 
         #region  Private Variables
-        private string _userName = "jrj2@test.dk";
-        private string _password = "tester";
+        private string _userName;
+        private string _password;
         #endregion
     }
 }

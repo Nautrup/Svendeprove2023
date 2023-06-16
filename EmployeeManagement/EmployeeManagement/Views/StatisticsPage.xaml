@@ -3,13 +3,155 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:EmployeeManagement.Views"
+      xmlns:local="clr-namespace:EmployeeManagement.Views" xmlns:Icon="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:viewmodel="clr-namespace:EmployeeManagement.ViewModel"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="StatisticsPage">
+      Title="Brugerinfo">
 
-    <Grid>
-        <TextBlock Text="Statistik" FontSize="24" FontWeight="Bold"
-                   HorizontalAlignment="Center" />
+    <Page.DataContext>
+        <viewmodel:EmployeeViewModel  />
+    </Page.DataContext>
+    
+    <Grid Grid.Column="2" Grid.Row="2">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Background="White" Margin="5">
+          
+                <!--Medarbejder information-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <!--Data-->
+                <StackPanel>
+                    <!--Navn, mellemnavn og efternavn -->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Navn" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Text="{Binding CurrentLoggedInUser.FirstName, UpdateSourceTrigger=PropertyChanged}" Height="25" />
+
+
+                        <TextBlock Grid.Column="2" Text="Mellemnavn:" VerticalAlignment="Center"  Margin="5 0 0 0" />
+                        <TextBox Grid.Column="3" Text="{Binding CurrentLoggedInUser.MiddleName}" Height="25" />
+
+                        <TextBlock Grid.Column="4" Text="Efternavn:" VerticalAlignment="Center"   Margin="5 0 0 0"/>
+                        <TextBox Grid.Column="5" Text="{Binding CurrentLoggedInUser.SurName}"  Height="25" />
+
+                    </Grid>
+
+                    <!--Ansættelses dato-->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Ansættelses dato:" TextWrapping="Wrap" />
+                        <DatePicker Grid.Column="1" SelectedDate="{Binding CurrentLoggedInUser.FirstDateOfEmployment, UpdateSourceTrigger=PropertyChanged}" 
+                                                Height="25" />
+
+                        <TextBlock  Grid.Column="2" Text="Sidste ansættelses dato:" TextWrapping="Wrap" 
+                                            Margin="5 0 0 0"/>
+                        <DatePicker Grid.Column="3" SelectedDate="{Binding CurrentLoggedInUser.LastDateOfEmployment, UpdateSourceTrigger=PropertyChanged}"  Height="25" />
+                    </Grid>
+
+                    <!--Sidste ansættelses dato-->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                    </Grid>
+
+                    <!--Lokation-->
+                    <Grid VerticalAlignment="Bottom" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Afdeling:" VerticalAlignment="Center" />
+                        <ListBox ItemsSource="{Binding CurrentLoggedInUser.Locations}" DisplayMemberPath="Name"  Grid.Column="1"
+                                            SelectedValue="{Binding CurrentLoggedInUser.Locations[0]}" SelectedItem="{Binding SelectedLocation}"
+                                            Height="50" >
+
+                        </ListBox>
+
+
+                    </Grid>
+
+
+                    <!--Rules-->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="9*"/>
+                            <ColumnDefinition Width="61*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Roller:" VerticalAlignment="Center" />
+
+                        <TextBlock Text="{Binding CurrentLoggedInUser.UserRole.Name}" Grid.Column="1" />
+
+                    </Grid>
+
+                    <!--Billede-->
+                    <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+
+                        <StackPanel Grid.Column="1">
+                            <!--Profil billede-->
+                            <Grid VerticalAlignment="Top">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="25" />
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Billede" />
+                                <Border BorderThickness="1" Width="150" Height="150" HorizontalAlignment="Left" Grid.Row="1" 
+                                        >
+                                    <Icon:PackIconMaterial Kind="AccountOutline" VerticalAlignment="Center"
+                                                           Width="150" Height="150"/>
+                                </Border>
+                            </Grid>
+
+                            <!--Upload billed-->
+                            <Grid VerticalAlignment="Top" Margin="0 5 0 5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+                                    <StackPanel Orientation="Horizontal">
+                                        <Icon:PackIconMaterial Kind="Upload" VerticalAlignment="Center" Width="12" Height="12" Margin="0 1 8 0" />
+                                        <TextBlock Text="Upload" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+
+            </Grid>
+
+
+
+        </Grid>
     </Grid>
 </Page>

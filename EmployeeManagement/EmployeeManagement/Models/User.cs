@@ -102,9 +102,21 @@ namespace EmployeeManagement.Models
         /// <param name="location"></param>
         public void RemoveLocation(Location location)
         {
+            //User updated = this;
+
+            //updated.Locations.Remove(location);
+            if (Locations.Count == 1)
+            {
+                throw new Exception("Du kan ikke slette den eneste lokation en bruger har");
+            }
+
             if (Locations.Contains(location))
             {
                 Locations.Remove(location);
+
+                var jsonData = JsonConvert.SerializeObject(this);
+
+                ApiHelper.Put($"/user/{ID}", jsonData);
                 //Delete($"/location/{location.ID}");
             }
         }

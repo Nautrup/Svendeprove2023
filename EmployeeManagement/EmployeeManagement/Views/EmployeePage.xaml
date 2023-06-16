@@ -298,7 +298,7 @@
 
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="2"
                                             Command="{Binding ShowAddLocationsCommand}"
-                                            Width="50" Height="25">
+                                            Width="50" Height="25" ToolTip="Tilføj lokation">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
@@ -309,7 +309,7 @@
                                     <Button Style="{StaticResource addNewMemeberButton}" Margin="5,0,0,0" Grid.Column="3"
                                             Command="{Binding RemoveSelectedUserLocationCommand}"
                                             Width="50" Height="25"
-                                            >
+                                            ToolTip="Fjern lokation">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="Delete" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
@@ -392,6 +392,7 @@
                                     <Button Style="{StaticResource addNewMemeberButton}" 
                                             Command="{Binding ShowChangeRolePopupCommand}"
                                             Margin="5,0,0,0" Grid.Column="2"
+                                            ToolTip="Skift rolle"
                                             Width="50" Height="25" HorizontalAlignment="Left">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="AccountEdit" VerticalAlignment="Center" Width="12" Height="12" />
@@ -402,7 +403,8 @@
                                     <Button Style="{StaticResource addNewMemeberButton}" 
                                             Command="{Binding ShowAddPermissionPopupCommand, UpdateSourceTrigger=PropertyChanged}"
                                             Margin="5,0,0,0" Grid.Column="3"
-                                            Width="50" Height="25" HorizontalAlignment="Left">
+                                            Width="50" Height="25" HorizontalAlignment="Left"
+                                            ToolTip="Tilføj regel til rolle">
                                         <StackPanel Orientation="Horizontal">
                                             <Icon:PackIconMaterial Kind="PlusBox" VerticalAlignment="Center" Width="12" Height="12" />
                                         </StackPanel>
