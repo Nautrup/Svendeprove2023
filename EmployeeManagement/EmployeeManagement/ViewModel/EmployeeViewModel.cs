@@ -29,13 +29,17 @@ namespace EmployeeManagement.ViewModel
             UpdateUserInformationCommand = new RelayCommand(o => UpdateUserInformation(SelectedUser), o => SelectedUser != null);
             CreateNewUserCommand = new RelayCommand(o => { } , o => SelectedUser != null);
             ShowCreateWindowCommand = new RelayCommand(o => ShowCreateWindow()) ;
+
             FindNextWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(7), o => SelectedUser != null);
             FindLastWeekWorkplanCommand = new RelayCommand(o => CurrentWeekStartDate = CurrentWeekStartDate.AddDays(-7), o => SelectedUser != null);
+
             ShowCreateWorkplanCommand = new RelayCommand(o => ShowCreateWorkplanWindow(), o => SelectedUserLocation != null);
 
             //New Role popup
             ShowPopupCreateNewRoleCommand = new RelayCommand(o => { ShowAddNewRolePopup = true; RoleName = string.Empty; RoleDescription = string.Empty; }) ;
+
             CreateNewRoleCommand = new RelayCommand(o => CreateNewRole(), o => SelectedPermissions != null && !string.IsNullOrEmpty(RoleName) && !string.IsNullOrEmpty(RoleDescription)) ;
+            
             CancelCreateRoleCommand = new RelayCommand(o => ShowAddNewRolePopup = false);
             
             // Tilføj Lokation Popup
@@ -100,6 +104,7 @@ namespace EmployeeManagement.ViewModel
             LoadRolePermissions(); // Henter roller
 
             CurrentWeekStartDate = GetStartOfWeek(DateTime.Now); // Henter første mandags dato i en uge
+
             // Tjekker bruger rettigheder
             if (CurrentLoggedInUser.UserRole.PermissionIds.Contains(1) || CurrentLoggedInUser.UserRole.PermissionIds.Contains(3))
             {
@@ -739,6 +744,7 @@ namespace EmployeeManagement.ViewModel
                 UserRole neweRole = new UserRole();
                 neweRole.Name = RoleName;
                 neweRole.Description = RoleDescription;
+
                 neweRole.PermissionIds = new List<int>()
                 {
                     SelectedPermissions.ID

@@ -164,10 +164,10 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <StackPanel Grid.Row="1" Grid.Column="2"  >
+                                    <!--<StackPanel Grid.Row="1" Grid.Column="2"  >
                                         <TextBlock Text="Lokation" FontWeight="SemiBold" FontSize="12" />
-                                        <TextBlock Text="{Binding CurrentLoggedInUser.Location.Name}" FontSize="11" />
-                                    </StackPanel>
+                                        <TextBlock Text="{Binding User.Locations[0].Name}" FontSize="11" />
+                                    </StackPanel>-->
 
                                 </Grid>
                             </DataTemplate>
@@ -226,10 +226,10 @@
                                     </StackPanel>
                                 </Button>
 
-                                <StackPanel Grid.Row="1" Grid.Column="2"  >
+                                <!--<StackPanel Grid.Row="1" Grid.Column="2"  >
                                     <TextBlock Text="Lokation" FontWeight="SemiBold" FontSize="12" />
                                     <TextBlock Text="{Binding Location.Name}" FontSize="11" />
-                                </StackPanel>
+                                </StackPanel>-->
 
                             </Grid>
                         </DataTemplate>

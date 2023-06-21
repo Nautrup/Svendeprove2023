@@ -16,12 +16,11 @@ namespace EmployeeManagement.Services
 {
     public static class ApiHelper
     {
-        private static string BaseAddress = "http://87.104.76.3:6969/"; // "http://87.104.76.3:6969/"; // "http://localhost:6969"; 
+        private static string BaseAddress = "http://87.104.76.3:6969/";  // "http://87.104.76.3:6969/"; // "http://localhost:6969"; 
         public static string EndPoint = BaseAddress;
 
         public static WebClient Client { get; set; }
         public static string Token { get; set; }
-
 
         public static void InitializeClient()
         {
@@ -29,16 +28,12 @@ namespace EmployeeManagement.Services
 
             if (Client.BaseAddress != BaseAddress)
             {
-
                 EndPoint = BaseAddress;// "http://87.104.76.3:6969/";
             }
 
             Client.BaseAddress = EndPoint;
-
-            
             Client.Headers.Add("Accept", "application/json");
             Client.Headers["Content-Type"] = "application/json";
-
         }
        
         public static void SetToken(string token)

@@ -130,7 +130,8 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" ItemContainerStyle="{StaticResource WorkplanTemplate}" 
+                <ListView ItemsSource="{Binding MondayTimeEntriesCollection}" 
+                          ItemContainerStyle="{StaticResource WorkplanTemplate}" 
                           SelectedItem="{Binding SelectedTimeEntry, UpdateSourceTrigger=PropertyChanged}">
 
                     <ListView.ContextMenu>
@@ -166,7 +167,8 @@
                                         <DataTemplate>
                                             <StackPanel Margin="5" >
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" FontSize="10" />
+                                                    <TextBlock Text="{Binding CreatedAtToDateTime.TimeOfDay }" 
+                                                               FontSize="10" />
                                                     <TextBlock Text=" - " FontSize="10" />
                                                     <TextBlock Text="{Binding User.FullName}" FontSize="10" />
                                                 </StackPanel>

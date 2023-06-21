@@ -23,6 +23,7 @@ namespace EmployeeManagement.ViewModel
         {
             EmployeeViewModel = new EmployeeViewModel();
             EmployeeViewModel.SelectedUser = CurrentLoggedInUser;
+
             CreateTimeEntryCommand = new RelayCommand(o => CreateEntry(SelectedLocationId), o => SelectedUser != null );
 
             GetTimeEntryTypes();

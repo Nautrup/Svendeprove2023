@@ -23,8 +23,8 @@ namespace EmployeeManagement.ViewModel
         public EmployeeTimeEntryViewModel()
         {
             LoadTimeEntryTypes(CurrentLoggedInUser.Company.ID);
-           
-            LoadTimeEntries(DUMMYTESTLOCATIONID);
+
+            LoadTimeEntries(CurrentLoggedInUser.Locations[0].ID);
         }
 
         public ICommand ClockInUserCommand { get; set; }

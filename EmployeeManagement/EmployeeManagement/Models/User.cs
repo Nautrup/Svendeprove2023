@@ -24,11 +24,11 @@ namespace EmployeeManagement.Models
         public string FullName { get { return $"{FirstName} {MiddleName} {SurName}"; } }
         public int? ProfileImage { get; set; }
 
-        public List<int> TimeTagCollection { get; set; } // skla have s til sidst
+        public List<int> TimeTagCollection { get; set; }
         public long? HiredDate { get; set; }
         public long? FiredDate { get; set; }
 
-        // brug til vise dato i UI
+   
         public DateTime FirstDateOfEmployment { get; set; }
         public DateTime? LastDateOfEmployment { get; set; }
 
